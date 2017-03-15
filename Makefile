@@ -9,7 +9,7 @@
 DOCKER_REPO ?= drud/nginx-php-fpm7-local
 
 # Upstream repo used in the Dockerfile
-NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG ?= 0.2.0
+NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG ?= v0.3.0
 UPSTREAM_REPO ?= drud/nginx-php-fpm7:$(NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG)
 
 # Top-level directories to build
