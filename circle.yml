@@ -12,7 +12,7 @@ stages:
 
       - type: shell
         # Complexity in getting name of docker image is result of shift in contents of .docker_image
-        command: docker run -p 80:80 $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
+        command: docker run -p 80:80 -d $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
         name: start container
 
       - type: shell
