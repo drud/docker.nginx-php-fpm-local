@@ -11,5 +11,5 @@ test:
         # Complexity in getting name of docker image is result of shift in contents of .docker_image
         - docker run -it $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')  php --version | grep "^PHP 7"
         - docker run -p 80:80 -d --name local -d $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
-        - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" local)" -- bash -c php test-email.php | grep "Test email sent"
+        - sudo lxc-attach -n "$(docker inspect --format "{{.Id}}" local)" -- bash -c 'php /var/www/html/docroot/test/test-email.php' | grep "Test email sent"
         - docker stop local
