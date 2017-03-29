@@ -6,7 +6,7 @@ $to = "to@mail.test";
 $subject = "PHP Mail Test";
 $message = "This is a test to check the PHP Mail functionality";
 $headers = "From: " . $from;
-$result = mail($to,$subject,$message, $headers);
+$result = mail($to, $subject, $message, $headers);
 if ($result == TRUE) {
     echo "Test email sent";
 }
