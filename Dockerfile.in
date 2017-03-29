@@ -3,6 +3,9 @@ FROM UPSTREAM_REPO
 ARG MAILHOG_VERSION=0.2.1
 ENV MAILHOG_VERSION=$MAILHOG_VERSION
 
+ARG MHSENDMAIL_VERSION=0.2.0
+ENV MHSENDMAIL_VERSION=$MHSENDMAIL_VERSION
+
 ENV PHP_INI /etc/php/7.0/fpm/php.ini
 
 ADD files /
@@ -24,7 +27,10 @@ RUN apt-get update && \
 
 ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 /usr/bin/mailhog
 
+ADD https://github.com/mailhog/mhsendmail/releases/download/v${MHSENDMAIL_VERSION}/mhsendmail_linux_amd64 /usr/bin/mhsendmail
+
 RUN chmod ugo+x /usr/bin/mailhog
+RUN chmod ugo+x /usr/bin/mhsendmail
 
 # Set development values for php.
 # We want to see errors and have opcache always revalidate.
@@ -32,7 +38,8 @@ RUN sed -i -e "s/display_errors = Off/display_errors = On/g" ${PHP_INI} && \
     sed -i -e "s/display_startup_errors = Off/display_startup_errors = On/g" ${PHP_INI} && \
     sed -i -e "s/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/g" ${PHP_INI} && \
     sed -i -e "s/track_errors = Off/track_errors = On/g" ${PHP_INI} && \
-    sed -i -e "s/opcache.revalidate_freq=2/opcache.revalidate_freq=0/g" ${PHP_INI}
+    sed -i -e "s/opcache.revalidate_freq=2/opcache.revalidate_freq=0/g" ${PHP_INI} && \
+    echo "\nsendmail_path = /usr/bin/mhsendmail" >> ${PHP_INI}
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
