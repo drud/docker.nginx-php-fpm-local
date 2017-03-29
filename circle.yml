@@ -3,9 +3,6 @@ executorType: machine
 stages:
   build:
     workDir: ~/docker.nginx-php-fpm-local
-    environment:
-      # Complexity in getting name of docker image is result of shift in contents of .docker_image
-      CONTAINER: $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
     steps:
       - type: checkout
 
@@ -14,17 +11,18 @@ stages:
         name: make container
 
       - type: shell
-        command: docker run -p 80:80 $CONTAINER
+        # Complexity in getting name of docker image is result of shift in contents of .docker_image
+        command: docker run -p 80:80 $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
         name: start container
 
       - type: shell
-        command: docker exec -it $CONTAINER php --version | grep "^PHP 7"
+        command: docker exec -it $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//') php --version | grep "^PHP 7"
         name: check php version
 
       - type: shell
-        command: docker exec -it $CONTAINER php /var/www/html/docroot/test/test-email.php | grep "Test email sent"
+        command: docker exec -it $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//') php /var/www/html/docroot/test/test-email.php | grep "Test email sent"
         name: test php mail
 
       - type: shell
-        command: docker stop $CONTAINER
+        command: docker stop $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
         name: stop container
