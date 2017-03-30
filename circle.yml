@@ -15,7 +15,7 @@ stages:
 
       - run:
           shell: /bin/bash
-          command: docker exec -it local php --version | grep "^PHP 7"
+          command: docker exec -it local php --version
           name: check php version
 
       - run:
