@@ -20,7 +20,7 @@ stages:
 
       - run:
           shell: /bin/bash
-          command: docker exec -it local php /var/www/html/docroot/test/test-email.php | grep "Test email sent"
+          command: docker exec -it local php /var/www/html/docroot/test/test-email.php
           name: test php mail
 
       - run:
