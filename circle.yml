@@ -7,22 +7,33 @@ stages:
       - type: checkout
 
       - type: shell
+        command: |
+          sudo apt-get remove docker docker-engine &&
+          sudo apt-get update &&
+          sudo apt-get install  apt-transport-https ca-certificates  curl software-properties-common &&
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &&
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" &&
+          sudo apt-get update &&
+          sudo apt-get install docker-ce=17.03.0~ce-0~ubuntu-trusty
+        name: Install docker
+
+      - type: shell
         command: make container
         name: make container
 
       - type: shell
         # Complexity in getting name of docker image is result of shift in contents of .docker_image
-        command: docker run -p 80:80 -d $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
+        command: docker run -p 80:80 -d --name local -d $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
         name: start container
 
       - type: shell
-        command: docker exec -it $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//') php --version | grep "^PHP 7"
+        command: docker exec -it local php --version | grep "^PHP 7"
         name: check php version
 
       - type: shell
-        command: docker exec -it $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//') php /var/www/html/docroot/test/test-email.php | grep "Test email sent"
+        command: docker exec -it local php /var/www/html/docroot/test/test-email.php | grep "Test email sent"
         name: test php mail
 
       - type: shell
-        command: docker stop $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
+        command: docker stop local
         name: stop container
