@@ -6,7 +6,7 @@ ENV MAILHOG_VERSION=$MAILHOG_VERSION
 ARG MHSENDMAIL_VERSION=0.2.0
 ENV MHSENDMAIL_VERSION=$MHSENDMAIL_VERSION
 
-ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
+ENV MH_SMTP_BIND_ADDR 127.0.0.1:8020
 
 ENV PHP_INI /etc/php/7.0/fpm/php.ini
 
@@ -41,7 +41,7 @@ RUN sed -i -e "s/display_errors = Off/display_errors = On/g" ${PHP_INI} && \
     sed -i -e "s/error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT/error_reporting = E_ALL/g" ${PHP_INI} && \
     sed -i -e "s/track_errors = Off/track_errors = On/g" ${PHP_INI} && \
     sed -i -e "s/opcache.revalidate_freq=2/opcache.revalidate_freq=0/g" ${PHP_INI} && \
-    echo "\nsendmail_path='/usr/bin/mailhog sendmail test@example.org --smtp-addr 127.0.0.1:1025'" >> ${PHP_INI}
+    echo "\nsendmail_path='/usr/bin/mailhog sendmail test@example.org --smtp-addr 127.0.0.1:8020'" >> ${PHP_INI}
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
