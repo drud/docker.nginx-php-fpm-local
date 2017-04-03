@@ -11,7 +11,7 @@ ADD files /
 
 RUN apt-get update && \
     apt-get install --no-install-recommends --no-install-suggests -y \
-        iputils-ping telnet netcat6 vim nano php7.0-xdebug && \
+        iputils-ping telnet netcat6 iproute2 vim nano php7.0-xdebug  && \
     apt-get autoremove -y && \
     apt-get clean -y && \
 	rm -rf /var/lib/apt/lists/*
