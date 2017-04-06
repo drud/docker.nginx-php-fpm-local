@@ -9,22 +9,6 @@ stages:
       - run: make container
 
       - run:
-          # Complexity in getting name of docker image is result of shift in contents of .docker_image
-          command: docker run -p 80:80 -d --name local -d $(sed 's/^.*drud/drud/' < .docker_image | sed 's/ .*$//')
-          name: start container
-
-      - run:
           shell: /bin/bash
-          command: docker exec -it local php --version
-          name: check php version
-
-      ## This test is disabled because mailhog smtp server appears to die in both versions of circle ci.
-      ## The test itself is functional, and should be run if any change affecting php or mailhog is made.
-      # - run:
-      #     shell: /bin/bash
-      #     command: docker exec -it local php /var/www/html/docroot/test/test-email.php
-      #     name: test php mail
-
-      - run:
-          command: docker stop local
-          name: stop container
+          command: make test
+          name: make test

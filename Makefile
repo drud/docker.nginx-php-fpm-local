@@ -40,3 +40,10 @@ include build-tools/makefile_components/base_container.mak
 include build-tools/makefile_components/base_push.mak
 #include build-tools/makefile_components/base_test_go.mak
 #include build-tools/makefile_components/base_test_python.mak
+
+test: container
+	@docker stop local || true
+	@docker rm local || true
+	docker run -p 80:80 -p 1025:1025 -d --name local -d `awk '{print $$1}' .docker_image`
+	docker exec -it local php --version | grep "PHP 7"
+	sleep 5 && docker exec -it local php /var/www/html/docroot/test/test-email.php | grep "Test email sent"
