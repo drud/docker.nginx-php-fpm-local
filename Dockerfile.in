@@ -31,3 +31,4 @@ RUN sed -i -e "s/display_errors = Off/display_errors = On/g" ${PHP_INI} && \
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
+HEALTHCHECK CMD curl --fail http://localhost/healthcheck/ || exit 1
