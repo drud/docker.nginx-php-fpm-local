@@ -42,9 +42,10 @@ include build-tools/makefile_components/base_push.mak
 #include build-tools/makefile_components/base_test_python.mak
 
 test: container
-	@docker stop local || true
-	@docker rm local || true
-	docker run -p 1081:80 -d --name local -d `awk '{print $$1}' .docker_image`
-	docker exec -it local php --version | grep "PHP 7"
-	sleep 5 && curl -s localhost:1081/test/test-email.php | grep "Test email sent"
-	@docker stop local && docker rm local
+	@docker stop web-local-test || true
+	@docker rm web-local-test || true
+	docker run -p 1081:80 -d --name web-local-test -d `awk '{print $$1}' .docker_image`
+	CONTAINER_NAME=web-local-test test/containercheck.sh
+	docker exec -it web-local-test php --version | grep "PHP 7"
+	curl -s localhost:1081/test/test-email.php | grep "Test email sent"
+	@docker stop web-local-test && docker rm web-local-test
