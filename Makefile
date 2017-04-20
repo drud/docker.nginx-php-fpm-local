@@ -12,7 +12,7 @@ UPSTREAM_REPO ?= drud/nginx-php-fpm7:$(NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG)
 #SRC_DIRS := filexs drudapi secrets utils
 
 # Optional to docker build
-DOCKER_ARGS = --build-arg MAILHOG_VERSION=0.2.1
+DOCKER_ARGS = --build-arg MAILHOG_VERSION=0.2.1 --build-arg NGINX_UID=$(shell id -u)
 
 # VERSION can be set by
   # Default: git tag
