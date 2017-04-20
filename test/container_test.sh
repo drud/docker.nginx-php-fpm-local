@@ -38,7 +38,7 @@ host_user=$(docker exec -it $CONTAINER_NAME ls -l /var/www/html/docroot/mounted/
 host_group=$(docker exec -it $CONTAINER_NAME ls -l /var/www/html/docroot/mounted/$host_fname | awk '{print $4;}')
 if [ $host_user != 'nginx' -o $host_group != 'nginx' ] ; then
 	echo "Incorrect container-side host or group, user=$host_user group=$host_group"
-	return 4
+	exit 4
 fi
 
 # Create a file in the shared volume; it will have the nginx user/group within container
