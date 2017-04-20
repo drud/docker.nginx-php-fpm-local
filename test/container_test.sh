@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Run tests of nginx-php-fpm-local container
+# NOTE: On MacOS this requires the "realpath" tool, easiest installed with:
+#   brew install coreutils
+
 set -o errexit
 set -x
 

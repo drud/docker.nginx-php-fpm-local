@@ -6,6 +6,8 @@ stages:
     steps:
       - checkout
 
+      - run: sudo apt-get -qq update && sudo apt-get -qq install -y realpath
+
       - run: make container
 
       - run:
