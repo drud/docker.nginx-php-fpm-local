@@ -12,7 +12,7 @@ now=$(date +%s)
 export CONTAINER_NAME=web-local-test
 
 # docker will be angry with us if we use /tmp instead of /private/tmp (OSX), so expand to /private/tmp
-tmpdir=$(realpath $(mktemp -d -t docroot))
+tmpdir=$(realpath $(mktemp -d -t docrootXXXXX))
 docker run -p 1081:80 -u 1000 -v $tmpdir:/var/www/html/docroot/mounted -d --name $CONTAINER_NAME -d $image
 $MYDIR/container_health_check.sh
 
