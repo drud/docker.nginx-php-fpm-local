@@ -11,7 +11,7 @@ stages:
       - run:
           command: docker version
           name: Display tool versions
-          
+
       - run: make container
 
       - run:

@@ -25,6 +25,7 @@ ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/Mai
 RUN chmod ugo+x /usr/bin/mailhog
 
 ADD files /
+RUN chown nginx:nginx /var/www/html/docroot/mounted
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
