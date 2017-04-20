@@ -21,11 +21,11 @@ tmpdir=$(realpath $(mktemp -d -t docrootXXXXX))
 docker run -p 1081:80 -u 1000 -v $tmpdir:/var/www/html/docroot/mounted -d --name $CONTAINER_NAME -d $image
 $MYDIR/container_health_check.sh
 
-#function finish {
-#	docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
-#	rm -rf $tmpdir
-#}
-#trap finish EXIT
+function finish {
+	docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
+	rm -rf $tmpdir
+}
+trap finish EXIT
 
 # Simple check to make sure PHP is working and is PHP7
 docker exec -it $CONTAINER_NAME php --version | grep "PHP 7"

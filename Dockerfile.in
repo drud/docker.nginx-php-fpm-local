@@ -21,8 +21,7 @@ RUN usermod -u 1000 nginx
 RUN groupmod -g 1000 nginx
 RUN chown -R nginx:nginx /var/log/nginx
 
-ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 /usr/bin/mailhog
-RUN chmod ugo+x /usr/bin/mailhog
+RUN wget --quiet -O /usr/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 && chmod ugo+x /usr/bin/mailhog
 
 ADD files /
 RUN chown nginx:nginx /var/www/html/docroot/mounted
