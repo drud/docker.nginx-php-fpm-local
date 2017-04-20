@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Run tests of nginx-php-fpm-local container
-# NOTE: On MacOS this requires the "realpath" tool, easiest installed with:
-#   brew install coreutils
+# NOTE: This requires the "realpath" tool, easiest installed with:
+#   MacOS: brew install coreutils
+#   Debian/Ubuntu: apt-get install realpath
 
 set -o errexit
 set -x
@@ -33,7 +34,8 @@ curl -s localhost:1081/test/test-email.php | grep "Test email sent"
 
 # Create a file in the shared volume; it will have the nginx user/group within container
 filename=created_in_container_$now.txt
-docker exec -it $CONTAINER_NAME touch /var/www/html/docroot/mounted/$filename
+# Odd bash -c is forced by docker exec bug returning 129 even from successful commands
+docker exec -it $CONTAINER_NAME bash -c "touch /var/www/html/docroot/mounted/$filename; exit \$?"
 
 # It should be owned by current user in $tmpdir on the host
 local_user=$(ls -l $tmpdir/$filename | awk '{print $3;}')
