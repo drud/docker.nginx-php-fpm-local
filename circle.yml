@@ -8,6 +8,10 @@ stages:
 
       - run: sudo apt-get -qq update && sudo apt-get -qq install -y realpath
 
+      - run:
+          command: docker version
+          name: Display tool versions
+          
       - run: make container
 
       - run:
