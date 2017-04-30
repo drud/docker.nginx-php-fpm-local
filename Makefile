@@ -1,7 +1,3 @@
-# Makefile for a standard golang repo with associated container
-
-##### These variables need to be adjusted in most repositories #####
-
 # This repo's root import path (under GOPATH).
 #PKG := github.com/drud/docker.nginx-php-fpm
 
@@ -16,7 +12,7 @@ UPSTREAM_REPO ?= drud/nginx-php-fpm7:$(NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG)
 #SRC_DIRS := filexs drudapi secrets utils
 
 # Optional to docker build
-DOCKER_ARGS = --build-arg MAILHOG_VERSION=0.2.1
+DOCKER_ARGS = --build-arg MAILHOG_VERSION=0.2.1 --build-arg NGINX_UID=$(shell id -u)
 
 # VERSION can be set by
   # Default: git tag
@@ -42,10 +38,4 @@ include build-tools/makefile_components/base_push.mak
 #include build-tools/makefile_components/base_test_python.mak
 
 test: container
-	@docker stop web-local-test || true
-	@docker rm web-local-test || true
-	docker run -p 1081:80 -d --name web-local-test -d `awk '{print $$1}' .docker_image`
-	CONTAINER_NAME=web-local-test test/containercheck.sh
-	docker exec -it web-local-test php --version | grep "PHP 7"
-	curl -s localhost:1081/test/test-email.php | grep "Test email sent"
-	@docker stop web-local-test && docker rm web-local-test
+	test/container_test.sh $(DOCKER_REPO):$(VERSION)

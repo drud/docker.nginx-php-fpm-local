@@ -3,21 +3,31 @@ FROM UPSTREAM_REPO
 ARG MAILHOG_VERSION=0.2.1
 ENV MAILHOG_VERSION=$MAILHOG_VERSION
 
+ARG NGINX_UID=1001
+ENV NGINX_UID=$NGINX_UID
+
 ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
 
 ENV PHP_INI /etc/php/7.0/fpm/php.ini
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends --no-install-suggests -y \
-        iputils-ping telnet netcat6 iproute2 vim nano php7.0-xdebug  && \
-    apt-get autoremove -y && \
-    apt-get clean -y && \
+RUN apt-get update -qq && \
+    apt-get install -qq --no-install-recommends --no-install-suggests -y \
+        iputils-ping telnet netcat6 iproute2 vim nano php7.0-xdebug sudo && \
+    apt-get autoremove -qq -y && \
+    apt-get clean -qq -y && \
 	rm -rf /var/lib/apt/lists/*
 
-ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 /usr/bin/mailhog
-RUN chmod ugo+x /usr/bin/mailhog
+# Add nginx (the primary login) to sudo group so can sudo.
+RUN adduser nginx sudo
+# Make the nginx user uid NGINX_UID, the default docker run/mount uid
+RUN usermod -u $NGINX_UID nginx
+RUN groupmod -g $NGINX_UID nginx
+RUN chown -R nginx:nginx /var/log/nginx
+
+RUN wget --quiet -O /usr/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 && chmod ugo+x /usr/bin/mailhog
 
 ADD files /
+RUN chown nginx:nginx /var/www/html/docroot/mounted
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025

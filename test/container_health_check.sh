@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 exitcode=1
 for i in `seq 1 60`;
 do
