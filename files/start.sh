@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Change nginx to UID/GID of the docker user
-if [ -n "$UID" ] ; then
-    usermod -u $UID nginx
+if [ -n "$DDEV_UID" ] ; then
+    usermod -u $DDEV_UID nginx
 fi
-if [ -n "$GID" ] ; then
-    groupmod -g $GID nginx
+if [ -n "$DDEV_GID" ] ; then
+    groupmod -g $DDEV_GID nginx
 fi
 
 # Display PHP errors or not
