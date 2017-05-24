@@ -7,6 +7,7 @@ fi
 if [ -n "$DDEV_GID" ] ; then
     groupmod -g $DDEV_GID nginx
 fi
+chown -R nginx:nginx /var/log/nginx
 
 # Display PHP errors or not
 if [[ "$ERRORS" != "1" ]] ; then
