@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Update full path NGINX_DOCROOT if DOCROOT env is provided
+if [ -n "$DOCROOT" ] ; then
+    NGINX_DOCROOT=/var/www/html/"$DOCROOT"
+fi
+
+# Substitute values of environment variables in nginx configuration
+envsubst < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-available/default.conf
+
 # Change nginx to UID/GID of the docker user
 if [ -n "$DDEV_UID" ] ; then
     usermod -u $DDEV_UID nginx
