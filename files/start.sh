@@ -2,7 +2,7 @@
 
 # Update full path NGINX_DOCROOT if DOCROOT env is provided
 if [ -n "$DOCROOT" ] ; then
-    NGINX_DOCROOT=/var/www/html/"$DOCROOT"
+    export NGINX_DOCROOT=/var/www/html/"$DOCROOT"
 fi
 
 # Substitute values of environment variables in nginx configuration
