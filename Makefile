@@ -49,6 +49,6 @@ test: container
 	docker exec -it web-local-test php --version | grep "PHP 7"
 	curl -s localhost:1081/test/test-email.php | grep "Test email sent"
 	@docker stop web-local-test && docker rm web-local-test
-	docker run -p 1081:80 -e "DOCROOT=potato" -e "NGINX_SITE_TEMPLATE=/test-custom.conf" -v `pwd`/test/test-custom.conf:/test-custom.conf -d --name web-local-test -d `awk '{print $$1}' .docker_image`
+	docker run -p 1081:80 -e "DOCROOT=potato" -v `pwd`/test/test-custom.conf:/var/www/html/.ddev/nginx-site.conf -d --name web-local-test -d `awk '{print $$1}' .docker_image`
 	docker exec -it web-local-test cat /etc/nginx/sites-available/default.conf | grep "docroot is /var/www/html/potato in custom conf"
 	@docker stop web-local-test && docker rm web-local-test

@@ -5,6 +5,10 @@ if [ -n "$DOCROOT" ] ; then
     export NGINX_DOCROOT=/var/www/html/"$DOCROOT"
 fi
 
+if [ -f /var/www/html/.ddev/nginx-site.conf ] ; then
+    export NGINX_SITE_TEMPLATE=/var/www/html/.ddev/nginx-site.conf
+fi
+
 # Substitute values of environment variables in nginx configuration
 envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-available/default.conf
 
