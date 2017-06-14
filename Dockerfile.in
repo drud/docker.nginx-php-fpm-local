@@ -7,7 +7,7 @@ ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
 
 ENV PHP_INI /etc/php/7.0/fpm/php.ini
 
-ENV NGINX_SITE_TEMPLATE /etc/nginx/nginx-site.env.conf
+ENV NGINX_SITE_TEMPLATE /etc/nginx/nginx-site.conf
 ENV NGINX_DOCROOT /var/www/html
 # Defines vars in colon-separated notation to be subsituted with values for NGINX_SITE_TEMPLATE on start
 ENV NGINX_SITE_VARS '$NGINX_DOCROOT'
@@ -20,7 +20,10 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/*
 
 ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 /usr/bin/mailhog
-RUN chmod ugo+x /usr/bin/mailhog
+
+RUN chmod ugo+x /usr/bin/mailhog && \
+    rm /etc/nginx/sites-enabled/default.conf && \
+    ln -s /etc/nginx/sites-available/nginx-site.conf /etc/nginx/sites-enabled/nginx-site.conf
 
 ADD files /
 

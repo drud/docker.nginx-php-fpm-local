@@ -2,7 +2,7 @@
 
 # Update full path NGINX_DOCROOT if DOCROOT env is provided
 if [ -n "$DOCROOT" ] ; then
-    export NGINX_DOCROOT=/var/www/html/"$DOCROOT"
+    export NGINX_DOCROOT="/var/www/html/$DOCROOT"
 fi
 
 if [ -f /var/www/html/.ddev/nginx-site.conf ] ; then
@@ -10,7 +10,7 @@ if [ -f /var/www/html/.ddev/nginx-site.conf ] ; then
 fi
 
 # Substitute values of environment variables in nginx configuration
-envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-available/default.conf
+envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-available/nginx-site.conf
 
 # Change nginx to UID/GID of the docker user
 if [ -n "$DDEV_UID" ] ; then
