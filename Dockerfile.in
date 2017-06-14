@@ -22,7 +22,7 @@ RUN apt-get update && \
 ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 /usr/bin/mailhog
 
 RUN chmod ugo+x /usr/bin/mailhog && \
-    rm /etc/nginx/sites-enabled/default.conf && \
+    rm /etc/nginx/sites-enabled/default.conf /etc/nginx/sites-available/default.conf && \
     ln -s /etc/nginx/sites-available/nginx-site.conf /etc/nginx/sites-enabled/nginx-site.conf
 
 ADD files /
