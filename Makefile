@@ -50,5 +50,5 @@ test: container
 	curl -s localhost:1081/test/test-email.php | grep "Test email sent"
 	@docker stop web-local-test && docker rm web-local-test
 	docker run -p 1081:80 -e "DOCROOT=potato" -v `pwd`/test/test-custom.conf:/var/www/html/.ddev/nginx-site.conf -d --name web-local-test -d `awk '{print $$1}' .docker_image`
-	docker exec -it web-local-test cat /etc/nginx/sites-available/default.conf | grep "docroot is /var/www/html/potato in custom conf"
+	docker exec -it web-local-test cat /etc/nginx/sites-available/nginx-site.conf | grep "docroot is /var/www/html/potato in custom conf"
 	@docker stop web-local-test && docker rm web-local-test
