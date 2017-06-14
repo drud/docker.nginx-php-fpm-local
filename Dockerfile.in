@@ -29,4 +29,4 @@ ADD files /
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
-HEALTHCHECK CMD curl --fail http://localhost/healthcheck/ || exit 1
+HEALTHCHECK --interval=5s --retries=5 CMD curl --fail http://localhost/healthcheck/ || exit 1
