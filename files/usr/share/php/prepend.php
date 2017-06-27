@@ -29,6 +29,10 @@ if (getenv("DDEV_PROVIDER") == "pantheon") {
     define('PRESSFLOW_SETTINGS', getenv('PRESSFLOW_SETTINGS'));
     $_SERVER['PRESSFLOW_SETTINGS'] = PRESSFLOW_SETTINGS;
 
+    $_ENV['PANTHEON_ENVIRONMENT'] = 'ddev';
+
+    // Set $HOME to empty since this is used as a prefix for the /tmp path.
+    $_ENV['HOME'] = $_SERVER['HOME'] = '';
 
     $_ENV['DRUPAL_HASH_SALT'] = getenv('DRUPAL_HASH_SALT');
     /**
