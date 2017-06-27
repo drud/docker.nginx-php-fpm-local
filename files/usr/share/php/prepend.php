@@ -31,7 +31,6 @@ if (getenv("DDEV_PROVIDER") == "pantheon") {
 
 
     $_ENV['DRUPAL_HASH_SALT'] = getenv('DRUPAL_HASH_SALT');
-    $_ENV["PANTHEON_ENVIRONMENT"] = "ddev";
     /**
     * We need to set this on Drupal 8 to make sure we are getting
     * properly redirected to install.php in the event that the
