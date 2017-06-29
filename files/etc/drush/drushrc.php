@@ -1,5 +1,5 @@
 <?php
 
-if (!empty($_ENV['DDEV_BASE_URL'])) {
-    $options['uri'] = $_ENV['DDEV_BASE_URL'];
+if (!empty($_ENV['DDEV_URL'])) {
+    $options['uri'] = $_ENV['DDEV_URL'];
 }
