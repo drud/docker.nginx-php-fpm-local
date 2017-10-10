@@ -10,14 +10,14 @@ CONTAINER_PORT="80"
 docker stop web-local-test || true
 docker rm web-local-test || true
 
+echo "checking tool versions"
+docker run -it `awk '{print $1}' .docker_image` php --version | grep "PHP 7"
+docker run -it `awk '{print $1}' .docker_image` drush --version
+docker run -it `awk '{print $1}' .docker_image` wp --version
+
 echo "starting container for tests"
 docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -d --name web-local-test -d `awk '{print $1}' .docker_image`
 CONTAINER_NAME=web-local-test ./test/containercheck.sh
-
-echo "checking tool versions"
-docker exec -it web-local-test php --version | grep "PHP 7"
-docker exec -it web-local-test drush --version
-docker exec -it web-local-test wp --version
 
 echo "testing php and email"
 curl --fail localhost:$HOST_PORT/test/phptest.php
