@@ -9,14 +9,14 @@
 DOCKER_REPO ?= drud/nginx-php-fpm7-local
 
 # Upstream repo used in the Dockerfile
-NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG ?= v0.4.2
-UPSTREAM_REPO ?= drud/nginx-php-fpm7:$(NGINX_LOCAL_UPSTREAM_FPM7_REPO_TAG)
+UPSTREAM_PHP_REPO_TAG ?= v0.2.0
+UPSTREAM_REPO ?= drud/php7:$(UPSTREAM_PHP_REPO_TAG)
 
 # Top-level directories to build
 #SRC_DIRS := filexs drudapi secrets utils
 
 # Optional to docker build
-DOCKER_ARGS = --build-arg MAILHOG_VERSION=0.2.1
+DOCKER_ARGS = --build-arg DRUSH_VERSION=8.1.12 --build-arg NGINX_VERSION=1.11.8-1~jessie --build-arg WP_CLI_VERSION=1.2.1 --build-arg MAILHOG_VERSION=0.2.1
 
 # VERSION can be set by
   # Default: git tag

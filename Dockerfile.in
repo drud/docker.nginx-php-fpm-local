@@ -1,31 +1,59 @@
 FROM UPSTREAM_REPO
 
+ARG NGINX_VERSION=1.11.8-1~jessie
+ENV NGINX_VERSION=$NGINX_VERSION
+ARG DRUSH_VERSION=8.1.12
+ENV DRUSH_VERSION=$DRUSH_VERSION
+ARG WP_CLI_VERSION=1.2.1
+ENV WP_CLI_VERSION=$WP_CLI_VERSION
 ARG MAILHOG_VERSION=0.2.1
 ENV MAILHOG_VERSION=$MAILHOG_VERSION
 
 ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
-
 ENV PHP_INI /etc/php/7.0/fpm/php.ini
-
+ENV PATH="/root/.composer/vendor/bin:$PATH"
 ENV NGINX_SITE_TEMPLATE /etc/nginx/nginx-site.conf
 ENV NGINX_DOCROOT /var/www/html
 # Defines vars in colon-separated notation to be subsituted with values for NGINX_SITE_TEMPLATE on start
 ENV NGINX_SITE_VARS '$NGINX_DOCROOT'
 
-RUN apt-get -qq update && \
-    apt-get -qq install --no-install-recommends --no-install-suggests -y \
-        iputils-ping telnet netcat6 iproute2 vim nano php7.0-xdebug gettext ncurses-bin && \
+RUN wget -q -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key && \
+    apt-key add /tmp/nginx_signing.key && \
+    echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list && \
+	apt-get -qq update && \
+	apt-get -qq install --no-install-recommends --no-install-suggests -y \
+        nginx=${NGINX_VERSION} \
+        libcap2-bin \
+        supervisor sudo \
+        iputils-ping telnet netcat6 iproute2 \
+        vim nano gettext ncurses-bin \
+        php7.0-xdebug && \
     apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/* && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
-ADD https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64 /usr/bin/mailhog
-
-RUN chmod ugo+x /usr/bin/mailhog && \
-    rm /etc/nginx/sites-enabled/default.conf /etc/nginx/sites-available/default.conf && \
-    ln -s /etc/nginx/sites-available/nginx-site.conf /etc/nginx/sites-enabled/nginx-site.conf
-
+ADD "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" /usr/bin/mailhog
+ADD "https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar" /usr/bin/drush
+ADD "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" /usr/bin/wp-cli
 ADD files /
+
+RUN rm /etc/php/7.0/cli/php.ini && \
+    ln -s /etc/php/7.0/fpm/php.ini /etc/php/7.0/cli/php.ini && \
+    mkdir -p /etc/nginx/sites-enabled && \
+    ln -s /etc/nginx/sites-available/nginx-site.conf /etc/nginx/sites-enabled/nginx-site.conf && \
+    touch /var/log/php7.0-fpm.log && \
+    chown nginx:nginx /var/log/php7.0-fpm.log && \
+    chown -R nginx:nginx /var/run && \
+    touch /var/log/nginx/access.log && \
+    touch /var/log/nginx/error.log && \
+    chown -R nginx:nginx /var/log/nginx/ && \
+    mkdir -p /var/lib/nginx/logs && \
+    touch /var/lib/nginx/logs/error.log && \
+    chown nginx:nginx /var/lib/nginx/logs/error.log && \
+    chmod ugo+x /usr/bin/mailhog && \
+    chmod ugo+x /usr/bin/* && \
+    chmod ugo+x /start.sh
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
