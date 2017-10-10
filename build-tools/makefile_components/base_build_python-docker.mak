@@ -9,6 +9,8 @@
 
 SHELL := /bin/bash
 
+PWD := $(shell pwd)
+
 BUILD_IMAGE ?= drud/golang-build-container:v0.2.0
 
 all: VERSION.txt build
@@ -30,4 +32,4 @@ container-clean:
 	rm -rf .container-* .dockerfile* .push-* linux darwin container VERSION.txt .docker_image
 
 bin-clean:
-	rm -rf .go bin .tmp
+	rm -rf .go $(GOTMP) bin .tmp
