@@ -16,7 +16,7 @@ UPSTREAM_REPO ?= drud/php7:$(UPSTREAM_PHP_REPO_TAG)
 #SRC_DIRS := filexs drudapi secrets utils
 
 # Optional to docker build
-DOCKER_ARGS = --build-arg DRUSH_VERSION=8.1.12 --build-arg NGINX_VERSION=1.11.8-1~jessie --build-arg WP_CLI_VERSION=1.2.1 --build-arg MAILHOG_VERSION=0.2.1
+DOCKER_ARGS = --build-arg DRUSH_VERSION=8.1.15 --build-arg NGINX_VERSION=1.11.8-1~jessie --build-arg WP_CLI_VERSION=1.3.0 --build-arg MAILHOG_VERSION=1.0.0
 
 # VERSION can be set by
   # Default: git tag
