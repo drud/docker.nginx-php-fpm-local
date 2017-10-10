@@ -16,8 +16,8 @@ CONTAINER_NAME=web-local-test ./test/containercheck.sh
 
 echo "checking tool versions"
 docker exec -it web-local-test php --version | grep "PHP 7"
-docker exec -it web-local-test drush --version
 docker exec -it web-local-test wp --version
+docker exec -it web-local-test drush --version
 
 echo "testing php and email"
 curl --fail localhost:$HOST_PORT/test/phptest.php
