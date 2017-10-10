@@ -2,11 +2,11 @@ FROM UPSTREAM_REPO
 
 ARG NGINX_VERSION=1.11.8-1~jessie
 ENV NGINX_VERSION=$NGINX_VERSION
-ARG DRUSH_VERSION=8.1.12
+ARG DRUSH_VERSION=8.1.15
 ENV DRUSH_VERSION=$DRUSH_VERSION
-ARG WP_CLI_VERSION=1.2.1
+ARG WP_CLI_VERSION=1.3.0
 ENV WP_CLI_VERSION=$WP_CLI_VERSION
-ARG MAILHOG_VERSION=0.2.1
+ARG MAILHOG_VERSION=1.0.0
 ENV MAILHOG_VERSION=$MAILHOG_VERSION
 
 ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
@@ -26,7 +26,7 @@ RUN wget -q -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key &&
         libcap2-bin \
         supervisor sudo \
         iputils-ping telnet netcat6 iproute2 \
-        vim nano gettext ncurses-bin \
+        vim nano gettext ncurses-bin zip unzip \
         php7.0-xdebug && \
     apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
@@ -41,7 +41,6 @@ ADD files /
 RUN rm /etc/php/7.0/cli/php.ini && \
     ln -s /etc/php/7.0/fpm/php.ini /etc/php/7.0/cli/php.ini && \
     mkdir -p /etc/nginx/sites-enabled && \
-    ln -s /etc/nginx/sites-available/nginx-site.conf /etc/nginx/sites-enabled/nginx-site.conf && \
     touch /var/log/php7.0-fpm.log && \
     chown nginx:nginx /var/log/php7.0-fpm.log && \
     chown -R nginx:nginx /var/run && \
@@ -51,10 +50,10 @@ RUN rm /etc/php/7.0/cli/php.ini && \
     mkdir -p /var/lib/nginx/logs && \
     touch /var/lib/nginx/logs/error.log && \
     chown nginx:nginx /var/lib/nginx/logs/error.log && \
-    chmod ugo+x /usr/bin/mailhog && \
     chmod ugo+x /usr/bin/* && \
     chmod ugo+x /start.sh
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
 HEALTHCHECK --interval=5s --retries=5 CMD curl --fail http://localhost/healthcheck/ || exit 1
+CMD ["/start.sh"]
