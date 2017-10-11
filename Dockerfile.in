@@ -1,6 +1,6 @@
-FROM UPSTREAM_REPO
+FROM drud/php7:v0.2.0
 
-ARG NGINX_VERSION=1.11.8-1~jessie
+ARG NGINX_VERSION=1.12.1-1~jessie
 ENV NGINX_VERSION=$NGINX_VERSION
 ARG DRUSH_VERSION=8.1.15
 ENV DRUSH_VERSION=$DRUSH_VERSION
@@ -19,10 +19,10 @@ ENV NGINX_SITE_VARS '$NGINX_DOCROOT'
 
 RUN wget -q -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key && \
     apt-key add /tmp/nginx_signing.key && \
-    echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list && \
+    echo "deb http://nginx.org/packages/debian/ jessie nginx" >> /etc/apt/sources.list && \
 	apt-get -qq update && \
 	apt-get -qq install --no-install-recommends --no-install-suggests -y \
-        nginx=${NGINX_VERSION} \
+        nginx \
         libcap2-bin \
         supervisor sudo \
         iputils-ping telnet netcat6 iproute2 \
