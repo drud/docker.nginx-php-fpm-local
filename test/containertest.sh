@@ -27,3 +27,4 @@ docker stop web-local-test && docker rm web-local-test
 echo "testing use of custom nginx config"
 docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -v `pwd`/test/test-custom.conf:/var/www/html/.ddev/nginx-site.conf -d --name web-local-test -d `awk '{print $1}' .docker_image`
 docker exec -it web-local-test cat /etc/nginx/sites-enabled/nginx-site.conf | grep "docroot is /var/www/html/potato in custom conf"
+docker stop web-local-test && docker rm web-local-test
