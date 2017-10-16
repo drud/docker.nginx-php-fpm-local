@@ -62,7 +62,7 @@ RUN apt-get -qq update && \
     apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/* && \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 ADD "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" /usr/local/bin/mailhog
 ADD "https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar" /usr/local/bin/drush
