@@ -64,9 +64,9 @@ RUN apt-get -qq update && \
 	rm -rf /var/lib/apt/lists/* && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
-ADD "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" /usr/bin/mailhog
-ADD "https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar" /usr/bin/drush
-ADD "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" /usr/bin/wp-cli
+ADD "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" /usr/local/bin/mailhog
+ADD "https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar" /usr/local/bin/drush
+ADD "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" /usr/local/bin/wp-cli
 ADD files /
 
 RUN rm /etc/php/7.1/cli/php.ini && \
@@ -81,7 +81,7 @@ RUN rm /etc/php/7.1/cli/php.ini && \
     mkdir -p /var/lib/nginx/logs && \
     touch /var/lib/nginx/logs/error.log && \
     chown nginx:nginx /var/lib/nginx/logs/error.log && \
-    chmod ugo+x /usr/bin/* && \
+    chmod ugo+x /usr/local/bin/* && \
     chmod ugo+x /start.sh
 
 VOLUME /var/log/nginx

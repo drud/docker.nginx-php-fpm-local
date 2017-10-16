@@ -10,7 +10,7 @@ if [ "$(whoami)" = "root" ]; then
       args="$args \"$i\""
   done
 
-  /usr/bin/wp-cli "$@" --path=$WP_CORE --allow-root
+  /usr/local/bin/wp-cli "$@" --path=$WP_CORE --allow-root
 else
-  /usr/bin/wp-cli "$@" --path=$WP_CORE
+  /usr/local/bin/wp-cli "$@" --path=$WP_CORE
 fi
