@@ -6,7 +6,7 @@
 #PKG := github.com/drud/docker.nginx-php-fpm
 
 # Docker repo for a push
-DOCKER_REPO ?= drud/nginx-php-fpm7-local
+DOCKER_REPO ?= drud/nginx-php-fpm-local
 
 # Top-level directories to build
 #SRC_DIRS := filexs drudapi secrets utils
