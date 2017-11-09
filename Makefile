@@ -12,7 +12,7 @@ DOCKER_REPO ?= drud/nginx-php-fpm-local
 #SRC_DIRS := filexs drudapi secrets utils
 
 # Optional to docker build
-DOCKER_ARGS = --build-arg PHP_VERSION=php7.1 --build-arg DRUSH_VERSION=8.1.15 --build-arg NGINX_VERSION=1.12.1-1~jessie --build-arg WP_CLI_VERSION=1.3.0 --build-arg MAILHOG_VERSION=1.0.0
+# DOCKER_ARGS =
 
 # VERSION can be set by
   # Default: git tag
