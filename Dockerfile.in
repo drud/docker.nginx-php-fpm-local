@@ -1,7 +1,8 @@
 FROM bitnami/minideb:jessie
 
-ENV PHP_VERSION=7.1
-ENV PHP_PACKAGE=7.1.11-1+0~20171027135825.10+jessie~1.gbp2e638d
+ENV PHP_PREFIX=php7.1
+ENV PHP_VERSION=7.1.11-1+0~20171027135825.10+jessie~1.gbp2e638d
+ENV PHP_XDEBUG_VERSION=2.5.5-1+0~20170628201550.1+jessie~1.gbp5a1f48
 ENV NGINX_VERSION=1.12.1-1~jessie
 ENV DRUSH_VERSION=8.1.15
 ENV WP_CLI_VERSION=1.4.0
@@ -34,28 +35,38 @@ RUN apt-get -qq update && \
         less \
         git \
         mysql-client \
-        ${PHP_VERSION}-curl \
-        ${PHP_VERSION}-cgi \
-        ${PHP_VERSION}-cli \
-        ${PHP_VERSION}-common \
-        ${PHP_VERSION}-fpm \
-        ${PHP_VERSION}-gd \
-        ${PHP_VERSION}-json \
-        ${PHP_VERSION}-mysql \
-        ${PHP_VERSION}-mbstring \
-        ${PHP_VERSION}-xml \
-        ${PHP_VERSION}-xmlrpc \
-        ${PHP_VERSION}-mcrypt \
-        ${PHP_VERSION}-opcache \
-        ${PHP_VERSION}-soap \
-        ${PHP_VERSION}-readline \
-        ${PHP_VERSION}-xdebug \
         nginx \
         libcap2-bin \
-        supervisor sudo \
-        iputils-ping telnet netcat6 iproute2 \
-        vim nano gettext ncurses-bin zip unzip  && \
-    apt-get -qq autoremove -y && \
+        supervisor \
+        sudo \
+        iputils-ping \
+        telnet \
+        netcat6 \
+        iproute2 \
+		vim \
+		nano \
+		gettext \
+		ncurses-bin \
+		zip \
+		unzip
+RUN	apt-get -qq install --no-install-recommends --no-install-suggests -y \
+        ${PHP_PREFIX}-curl=${PHP_VERSION} \
+        ${PHP_PREFIX}-cgi=${PHP_VERSION} \
+        ${PHP_PREFIX}-cli=${PHP_VERSION} \
+        ${PHP_PREFIX}-common=${PHP_VERSION} \
+        ${PHP_PREFIX}-fpm=${PHP_VERSION} \
+        ${PHP_PREFIX}-gd=${PHP_VERSION} \
+        ${PHP_PREFIX}-json=${PHP_VERSION} \
+        ${PHP_PREFIX}-mysql=${PHP_VERSION} \
+        ${PHP_PREFIX}-mbstring=${PHP_VERSION} \
+        ${PHP_PREFIX}-xml=${PHP_VERSION} \
+        ${PHP_PREFIX}-xmlrpc=${PHP_VERSION} \
+        ${PHP_PREFIX}-mcrypt=${PHP_VERSION} \
+        ${PHP_PREFIX}-opcache=${PHP_VERSION} \
+        ${PHP_PREFIX}-soap=${PHP_VERSION} \
+        ${PHP_PREFIX}-readline=${PHP_VERSION} \
+        php-xdebug=${PHP_XDEBUG_VERSION}
+RUN    apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/* && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
