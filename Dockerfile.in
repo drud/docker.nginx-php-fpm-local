@@ -39,6 +39,7 @@ RUN apt-get -qq update && \
         libcap2-bin \
         supervisor \
         sudo \
+        imagemagick \
         iputils-ping \
         telnet \
         netcat6 \
@@ -49,8 +50,7 @@ RUN apt-get -qq update && \
 		ncurses-bin \
 		zip \
 		unzip \
-		libpcre3
-RUN	apt-get -qq install --no-install-recommends --no-install-suggests -y \
+		libpcre3 \
         ${PHP_PREFIX}-curl=${PHP_VERSION} \
         ${PHP_PREFIX}-cgi=${PHP_VERSION} \
         ${PHP_PREFIX}-cli=${PHP_VERSION} \
@@ -67,8 +67,8 @@ RUN	apt-get -qq install --no-install-recommends --no-install-suggests -y \
         ${PHP_PREFIX}-soap=${PHP_VERSION} \
         ${PHP_PREFIX}-readline=${PHP_VERSION} \
         ${PHP_PREFIX}-zip=${PHP_VERSION} \
-        php-xdebug=${PHP_XDEBUG_VERSION}
-RUN    apt-get -qq autoremove -y && \
+        php-xdebug=${PHP_XDEBUG_VERSION} && \
+    apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/* && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
