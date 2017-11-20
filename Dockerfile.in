@@ -1,6 +1,10 @@
 FROM bitnami/minideb:jessie
 
-ENV PHP_PREFIX=php7.1
+ENV PHP_VERSION=7.1
+ENV PHP_PREFIX=php${PHP_VERSION}
+ENV PHP_EXACTVERSION=7.1.11-1+0~20171027135825.10+jessie~1.gbp2e638d
+
+ENV PHP_XDEBUG_VERSION=2.5.5-1+0~20170628201550.1+jessie~1.gbp5a1f48
 ENV NGINX_VERSION=1.12.1-1~jessie
 ENV DRUSH_VERSION=8.1.15
 ENV WP_CLI_VERSION=1.4.0
@@ -9,7 +13,7 @@ ENV MAILHOG_VERSION=1.0.0
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
-ENV PHP_INI /etc/php/7.1/fpm/php.ini
+ENV PHP_INI /etc/php/${PHP_VERSION}/fpm/php.ini
 ENV PATH="/root/.composer/vendor/bin:$PATH"
 ENV NGINX_SITE_TEMPLATE /etc/nginx/nginx-site.conf
 ENV NGINX_DOCROOT /var/www/html
@@ -49,23 +53,23 @@ RUN apt-get -qq update && \
 		zip \
 		unzip \
 		libpcre3 \
-        ${PHP_PREFIX}-curl \
-        ${PHP_PREFIX}-cgi \
-        ${PHP_PREFIX}-cli \
-        ${PHP_PREFIX}-common \
-        ${PHP_PREFIX}-fpm \
-        ${PHP_PREFIX}-gd \
-        ${PHP_PREFIX}-json \
-        ${PHP_PREFIX}-mysql \
-        ${PHP_PREFIX}-mbstring \
-        ${PHP_PREFIX}-xml \
-        ${PHP_PREFIX}-xmlrpc \
-        ${PHP_PREFIX}-mcrypt \
-        ${PHP_PREFIX}-opcache \
-        ${PHP_PREFIX}-soap \
-        ${PHP_PREFIX}-readline \
-        ${PHP_PREFIX}-zip \
-        php-xdebug && \
+        ${PHP_PREFIX}-curl=${PHP_VERSION} \
+        ${PHP_PREFIX}-cgi=${PHP_VERSION} \
+        ${PHP_PREFIX}-cli=${PHP_VERSION} \
+        ${PHP_PREFIX}-common=${PHP_VERSION} \
+        ${PHP_PREFIX}-fpm=${PHP_VERSION} \
+        ${PHP_PREFIX}-gd=${PHP_VERSION} \
+        ${PHP_PREFIX}-json=${PHP_VERSION} \
+        ${PHP_PREFIX}-mysql=${PHP_VERSION} \
+        ${PHP_PREFIX}-mbstring=${PHP_VERSION} \
+        ${PHP_PREFIX}-xml=${PHP_VERSION} \
+        ${PHP_PREFIX}-xmlrpc=${PHP_VERSION} \
+        ${PHP_PREFIX}-mcrypt=${PHP_VERSION} \
+        ${PHP_PREFIX}-opcache=${PHP_VERSION} \
+        ${PHP_PREFIX}-soap=${PHP_VERSION} \
+        ${PHP_PREFIX}-readline=${PHP_VERSION} \
+        ${PHP_PREFIX}-zip=${PHP_VERSION} \
+        php-xdebug=${PHP_XDEBUG_VERSION} && \
     apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/* && \
@@ -76,8 +80,8 @@ ADD "https://github.com/drush-ops/drush/releases/download/${DRUSH_VERSION}/drush
 ADD "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" /usr/local/bin/wp-cli
 ADD files /
 
-RUN rm /etc/php/7.1/cli/php.ini && \
-    ln -s /etc/php/7.1/fpm/php.ini /etc/php/7.1/cli/php.ini && \
+RUN rm -f /etc/php/${PHP_VERSION}/cli/php.ini && \
+    ln -s /etc/php/{PHP_VERSION}/fpm/php.ini /etc/php/${PHP_VERSION}/cli/php.ini && \
     mkdir -p /etc/nginx/sites-enabled && \
     touch /var/log/php-fpm.log && \
     chown nginx:nginx /var/log/php-fpm.log && \
