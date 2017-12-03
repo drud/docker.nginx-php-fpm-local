@@ -1,7 +1,8 @@
 FROM bitnami/minideb:jessie
 
-ENV PHP_VERSION=7.1
-ENV PHP_PREFIX=php${PHP_VERSION}
+ENV PHP_VERSIONS="5.6 7.0 7.1 7.2"
+ENV PHP_DEFAULT_VERSION="7.1"
+
 ENV NGINX_VERSION=1.12.1-1~jessie
 ENV DRUSH_VERSION=8.1.15
 ENV WP_CLI_VERSION=1.4.0
@@ -49,24 +50,10 @@ RUN apt-get -qq update && \
 		ncurses-bin \
 		zip \
 		unzip \
-		libpcre3 \
-        ${PHP_PREFIX}-curl \
-        ${PHP_PREFIX}-cgi \
-        ${PHP_PREFIX}-cli \
-        ${PHP_PREFIX}-common \
-        ${PHP_PREFIX}-fpm \
-        ${PHP_PREFIX}-gd \
-        ${PHP_PREFIX}-json \
-        ${PHP_PREFIX}-mysql \
-        ${PHP_PREFIX}-mbstring \
-        ${PHP_PREFIX}-xml \
-        ${PHP_PREFIX}-xmlrpc \
-        ${PHP_PREFIX}-mcrypt \
-        ${PHP_PREFIX}-opcache \
-        ${PHP_PREFIX}-soap \
-        ${PHP_PREFIX}-readline \
-        ${PHP_PREFIX}-zip \
-        php-xdebug && \
+		libpcre3 && \
+	for v in php${PHP_VERSIONS}; do apt-get -qq install --no-install-recommends --no-install-suggests -y $v-curl $v-cgi $v-cli $v-common $v-fpm $v-gd $v-json $v-mysql $v-mbstring  $v-opcache $v-soap $v-readline $v-xml $v-xmlrpc $v-zip; done && \
+	for v in php5.6 php7.0 php7.1; do apt-get -qq install --no-install-recommends --no-install-suggests -y $v-mcrypt; done && \
+	apt-get -qq install --no-install-recommends --no-install-suggests -y php-xdebug && \
     apt-get -qq autoremove -y && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/* && \
@@ -78,9 +65,8 @@ ADD files /
 
 RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
 
-RUN rm -f /etc/php/${PHP_VERSION}/cli/php.ini && \
-    ln -s /etc/php/{PHP_VERSION}/fpm/php.ini /etc/php/${PHP_VERSION}/cli/php.ini && \
-    mkdir -p /etc/nginx/sites-enabled && \
+RUN for v in ${PHP_VERSIONS} ; do ln -sf /etc/php/$v/fpm/php.ini /etc/php/$v/cli/php.ini; done
+RUN mkdir -p /etc/nginx/sites-enabled && \
     touch /var/log/php-fpm.log && \
     chown nginx:nginx /var/log/php-fpm.log && \
     chown -R nginx:nginx /var/run && \
@@ -91,7 +77,9 @@ RUN rm -f /etc/php/${PHP_VERSION}/cli/php.ini && \
     touch /var/lib/nginx/logs/error.log && \
     chown nginx:nginx /var/lib/nginx/logs/error.log && \
     chmod ugo+x /usr/local/bin/* && \
-    chmod ugo+x /start.sh
+    chmod ugo+x /start.sh && \
+    update-alternatives --set php /usr/bin/php${PHP_DEFAULT_VERSION} && \
+    ln -s /usr/sbin/php-fpm${PHP_DEFAULT_VERSION} /usr/sbin/php-fpm
 
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
