@@ -16,6 +16,7 @@ fi
 if [ -n "$DDEV_PHP_VERSION" ] ; then
 	update-alternatives --set php /usr/bin/php${DDEV_PHP_VERSION}
 	ln -sf /usr/sbin/php-fpm${DDEV_PHP_VERSION} /usr/sbin/php-fpm
+	export PHP_INI=/etc/php/${DDEV_PHP_VERSION}/fpm/php.ini
 fi
 
 # Substitute values of environment variables in nginx configuration

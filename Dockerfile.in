@@ -2,6 +2,7 @@ FROM bitnami/minideb:jessie
 
 ENV PHP_VERSIONS="5.6 7.0 7.1 7.2"
 ENV PHP_DEFAULT_VERSION="7.1"
+ENV PHP_INI=/etc/php/$PHP_DEFAULT_VERSION/fpm/php.ini
 
 ENV NGINX_VERSION=1.12.1-1~jessie
 ENV DRUSH_VERSION=8.1.15
@@ -11,7 +12,6 @@ ENV MAILHOG_VERSION=1.0.0
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
-ENV PHP_INI /etc/php/${PHP_VERSION}/fpm/php.ini
 ENV PATH="/root/.composer/vendor/bin:$PATH"
 ENV NGINX_SITE_TEMPLATE /etc/nginx/nginx-site.conf
 ENV NGINX_DOCROOT /var/www/html
@@ -59,13 +59,12 @@ RUN apt-get -qq update && \
 	rm -rf /var/lib/apt/lists/* && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-ADD "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" /usr/local/bin/mailhog
-ADD "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" /usr/local/bin/wp-cli
-ADD files /
-
+RUN curl -sS "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" -o /usr/local/bin/mailhog && chmod ugo+rx /usr/local/bin/mailhog
+RUN curl -sS "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp-cli && chmod ugo+rx /usr/local/bin/wp-cli
 RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
 
-RUN for v in ${PHP_VERSIONS} ; do ln -sf /etc/php/$v/fpm/php.ini /etc/php/$v/cli/php.ini; done
+ADD files /
+
 RUN mkdir -p /etc/nginx/sites-enabled && \
     touch /var/log/php-fpm.log && \
     chown nginx:nginx /var/log/php-fpm.log && \
