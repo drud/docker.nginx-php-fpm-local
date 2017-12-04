@@ -6,7 +6,7 @@ ENV PHP_INI=/etc/php/$PHP_DEFAULT_VERSION/fpm/php.ini
 
 ENV NGINX_VERSION=1.12.1-1~jessie
 ENV DRUSH_VERSION=8.1.15
-ENV WP_CLI_VERSION=1.4.0
+ENV WP_CLI_VERSION=1.4.1
 ENV MAILHOG_VERSION=1.0.0
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -59,8 +59,8 @@ RUN apt-get -qq update && \
 	rm -rf /var/lib/apt/lists/* && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN curl -sS "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" -o /usr/local/bin/mailhog && chmod ugo+rx /usr/local/bin/mailhog
-RUN curl -sS "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp-cli && chmod ugo+rx /usr/local/bin/wp-cli
+RUN curl -sSL "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" -o /usr/local/bin/mailhog && chmod ugo+rx /usr/local/bin/mailhog
+RUN curl -sSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp-cli && chmod ugo+rx /usr/local/bin/wp-cli
 RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
 
 ADD files /
