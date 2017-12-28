@@ -1,6 +1,6 @@
 FROM bitnami/minideb:jessie
 
-ENV PHP_VERSIONS="5.6 7.0 7.1 7.2"
+ENV PHP_VERSIONS="5.6 7.0 7.1"
 ENV PHP_DEFAULT_VERSION="7.1"
 ENV PHP_INI=/etc/php/$PHP_DEFAULT_VERSION/fpm/php.ini
 
