@@ -3,7 +3,7 @@ set -x
 set -o errexit nounset pipefail
 
 # If DDEV_PHP_VERSION isn't set, use a reasonable default
-DDEV_PHP_VERSION?=${DDEV_PHP_VERSION:-$PHP_DEFAULT_VERSION}
+DDEV_PHP_VERSION=${DDEV_PHP_VERSION:-$PHP_DEFAULT_VERSION}
 
 # Update full path NGINX_DOCROOT if DOCROOT env is provided
 if [ -n "$DOCROOT" ] ; then
