@@ -19,7 +19,7 @@ trap cleanup EXIT
 cleanup
 
 for v in 5.6 7.0 7.1 7.2; do
-	echo "starting container for tests"
+	echo "starting container for tests on php$v"
 	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
 	./test/containercheck.sh
 	curl --fail localhost:$HOST_PORT/test/phptest.php
@@ -28,7 +28,7 @@ for v in 5.6 7.0 7.1 7.2; do
 	docker exec -it $CONTAINER drush --version
 	docker exec -it $CONTAINER wp --version
 
-	echo "testing error states"
+	echo "testing error states for php$v"
 	# These are just the standard nginx 403 and 404 pages
 	curl localhost:$HOST_PORT/ | grep "403 Forbidden"
 	curl localhost:$HOST_PORT/asdf | grep "404 Not Found"
@@ -39,7 +39,7 @@ for v in 5.6 7.0 7.1 7.2; do
 	curl localhost:$HOST_PORT/test/400.php | grep "ddev web container.*400"
 	curl localhost:$HOST_PORT/test/401.php | grep "ddev web container.*401"
 
-	echo "testing php and email"
+	echo "testing php and email for php$v"
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
 
