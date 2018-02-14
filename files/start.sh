@@ -37,9 +37,9 @@ chown -R nginx:nginx /var/log/nginx
 
 # Display PHP errors or not
 if [[ "$ERRORS" != "1" ]] ; then
- echo php_flag[display_errors] = off >> /etc/php/7.1/fpm/php-fpm.conf
+ echo php_flag[display_errors] = off >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
 else
- echo php_flag[display_errors] = on >> /etc/php/7.1/fpm/php-fpm.conf
+ echo php_flag[display_errors] = on >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
 fi
 
 /usr/bin/supervisord -c /etc/supervisord.conf
