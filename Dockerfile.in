@@ -8,6 +8,7 @@ ENV NGINX_VERSION=1.12.1-1~jessie
 ENV DRUSH_VERSION=8.1.15
 ENV WP_CLI_VERSION=1.4.1
 ENV MAILHOG_VERSION=1.0.0
+ENV BACKDROP_DRUSH_VERSION=0.0.6
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
@@ -62,9 +63,11 @@ RUN curl -sSL "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_V
 RUN curl -sSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp-cli
 RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
 
-RUN curl https://drupalconsole.com/installer -L -o /usr/local/bin/drupal && chmod +x /usr/local/bin/drupal
+RUN curl -sSL "https://drupalconsole.com/installer" -L -o /usr/local/bin/drupal && chmod +x /usr/local/bin/drupal
 
 ADD files /
+
+RUN curl -sSL https://github.com/backdrop-contrib/drush/releases/download/${BACKDROP_DRUSH_VERSION}/drush.zip -o /tmp/backdrop_drush.zip && unzip /tmp/backdrop_drush.zip -d ~/backdrop_drush_commands
 
 RUN mkdir -p /etc/nginx/sites-enabled && \
     touch /var/log/php-fpm.log && \

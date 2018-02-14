@@ -19,6 +19,10 @@ if [ -n "$DDEV_PHP_VERSION" ] ; then
 	export PHP_INI=/etc/php/${DDEV_PHP_VERSION}/fpm/php.ini
 fi
 
+if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
+	mkdir -p ~/.drush/commands && ln -s ~/backdrop_drush_commands ~/.drush/commands/backdrop
+fi
+
 # Substitute values of environment variables in nginx configuration
 envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-enabled/nginx-site.conf
 
