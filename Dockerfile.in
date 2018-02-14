@@ -63,6 +63,8 @@ RUN curl -sSL "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_V
 RUN curl -sSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp-cli
 RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
 
+RUN curl https://drupalconsole.com/installer -L -o /usr/local/bin/drupal && chmod +x /usr/local/bin/drupal
+
 ADD files /
 
 RUN mkdir -p /etc/nginx/sites-enabled && \
