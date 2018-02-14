@@ -18,7 +18,7 @@ trap cleanup EXIT
 
 cleanup
 
-for v in 5.6 7.0 7.1; do
+for v in 5.6 7.0 7.1 7.2; do
 	echo "starting container for tests"
 	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
 	./test/containercheck.sh
