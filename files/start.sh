@@ -26,6 +26,15 @@ if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
 	mkdir -p ~/.drush/commands && ln -s ~/backdrop_drush_commands ~/.drush/commands/backdrop
 fi
 
+
+# Get and link a specific nginx-site.conf for our project type (if it exists)
+rm -f /etc/nginx/nginx-site.conf
+if [ -f /etc/nginx/nginx-site-$DDEV_PROJECT_TYPE.conf ] ; then
+    ln -s /etc/nginx/nginx-site-$DDEV_PROJECT_TYPE.conf /etc/nginx/nginx-site.conf
+else
+    ln -s /etc/nginx/nginx-site-default.conf /etc/nginx/nginx-site.conf
+fi
+
 # Substitute values of environment variables in nginx configuration
 envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-enabled/nginx-site.conf
 
