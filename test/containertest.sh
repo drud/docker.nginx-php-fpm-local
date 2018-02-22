@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 set -o errexit
 set -o pipefail
 set -o nounset
@@ -43,6 +45,24 @@ for v in 5.6 7.0 7.1 7.2; do
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
 
+	docker rm -f $CONTAINER
+done
+
+# Run various project_types and check behavior.
+for project_type in drupal6 drupal7 drupal8 typo3 default; do
+	PHP_VERSION="7.1"
+
+	if [ "$project_type" == "drupal6" ]; then
+	  PHP_VERSION="5.6"
+	fi
+	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$PHP_VERSION" -e "DDEV_PROJECT_TYPE=$project_type" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
+	./test/containercheck.sh
+	curl --fail localhost:$HOST_PORT/test/phptest.php
+	# Make sure that the project-specific config has been linked in.
+	docker exec -it $CONTAINER grep "# ddev $project_type config" /etc/nginx/nginx-site.conf
+	# Make sure that the right PHP version was selected for the project_type
+	# Only drupal6 is currently different here.
+	docker exec -it $CONTAINER php --version | grep "PHP $PHP_VERSION"
 	docker rm -f $CONTAINER
 done
 
