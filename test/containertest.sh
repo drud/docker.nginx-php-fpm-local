@@ -49,7 +49,7 @@ for v in 5.6 7.0 7.1 7.2; do
 done
 
 # Run various project_types and check behavior.
-for project_type in drupal6 drupal7 drupal8 typo3 default; do
+for project_type in drupal6 drupal7 drupal8 typo3 backdrop default; do
 	PHP_VERSION="7.1"
 
 	if [ "$project_type" == "drupal6" ]; then
@@ -63,6 +63,14 @@ for project_type in drupal6 drupal7 drupal8 typo3 default; do
 	# Make sure that the right PHP version was selected for the project_type
 	# Only drupal6 is currently different here.
 	docker exec -it $CONTAINER php --version | grep "PHP $PHP_VERSION"
+
+	# Make sure that backdrop drush commands were added on backdrop and only backdrop
+	if [ "$project_type" == "backdrop" ] ; then
+	 	# fails if the directory exists
+		docker exec -it $CONTAINER touch /root/.drush/commands/backdrop/junk.txt
+	else
+		docker exec -it $CONTAINER bash -c 'if [ -d  /root/.drush/commands/backdrop ] ; then exit 1; fi'
+	fi
 	docker rm -f $CONTAINER
 done
 
