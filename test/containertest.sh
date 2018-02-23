@@ -66,10 +66,10 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop default; do
 
 	# Make sure that backdrop drush commands were added on backdrop and only backdrop
 	if [ "$project_type" == "backdrop" ] ; then
-	 	# fails if the directory exists
-		docker exec -it $CONTAINER touch /root/.drush/commands/backdrop/junk.txt
+	 	# The .drush/commands/backdrop directory should only exist for backdrop apptype
+		docker exec -it $CONTAINER bash -c 'if [ ! -d  /root/.drush/commands/backdrop ] ; then exit 1; fi'
 	else
-		docker exec -it $CONTAINER bash -c 'if [ -d  /root/.drush/commands/backdrop ] ; then exit 1; fi'
+		docker exec -it $CONTAINER bash -c 'if [ -d  /root/.drush/commands/backdrop ] ; then exit 2; fi'
 	fi
 	docker rm -f $CONTAINER
 done
