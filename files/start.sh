@@ -57,4 +57,4 @@ fi
 /usr/bin/supervisord -c /etc/supervisord.conf
 
 echo 'Server started'
-tail -f /var/log/nginx/error.log
+tail -f /var/log/nginx/error.log /var/log/php-fpm.log

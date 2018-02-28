@@ -64,6 +64,12 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop wordpress default; do
 	# Only drupal6 is currently different here.
 	docker exec -it $CONTAINER php --version | grep "PHP $PHP_VERSION"
 
+	# Make sure we don't have lots of "closed keepalive connection" complaints
+	docker logs $CONTAINER | grep -v "closed keepalive connection"
+	# Make sure both nginx logs and fpm logs are being tailed
+	docker logs $CONTAINER | grep "==> /var/log/nginx/error.log" >/dev/null
+	docker logs $CONTAINER | grep "==> /var/log/php-fpm.log" >/dev/null
+
 	# Make sure that backdrop drush commands were added on backdrop and only backdrop
 	if [ "$project_type" == "backdrop" ] ; then
 	 	# The .drush/commands/backdrop directory should only exist for backdrop apptype
