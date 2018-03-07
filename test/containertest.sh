@@ -91,6 +91,6 @@ done
 echo "testing use of custom nginx and php configs"
 docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSION=7.2" -v $PWD/test/testdata:/ddev_config -d --name $CONTAINER_NAME -d $DOCKER_IMAGE
 docker exec -it $CONTAINER_NAME grep "docroot is /var/www/html/potato in custom conf" /etc/nginx/sites-enabled/nginx-site.conf
-# Make sure that the 7.2 php.ini has been altered with our change.
-docker exec -it $CONTAINER_NAME grep "max_input_time = 999" /etc/php/7.2/fpm/php.ini
+# Make sure that PHP has picked up our config change.
+docker exec -it $CONTAINER_NAME php --re xdebug | grep "xdebug does not exist"
 
