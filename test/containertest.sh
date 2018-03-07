@@ -20,9 +20,14 @@ trap cleanup EXIT
 
 cleanup
 
+# Using a static composer dir saves the composer downloads for each php version.
+composerdir=/tmp/composer_$$
+mkdir -p $composerdir
+
 for v in 5.6 7.0 7.1 7.2; do
 	echo "starting container for tests on php$v"
-	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
+
+	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -v "$composerdir:/root/.composer" -d $DOCKER_IMAGE)
 	./test/containercheck.sh
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
