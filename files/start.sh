@@ -10,8 +10,8 @@ if [ -n "$DOCROOT" ] ; then
     export NGINX_DOCROOT="/var/www/html/$DOCROOT"
 fi
 
-if [ -f /var/www/html/.ddev/nginx-site.conf ] ; then
-    export NGINX_SITE_TEMPLATE=/var/www/html/.ddev/nginx-site.conf
+if [ -f "/ddev_config/nginx-site.conf" ] ; then
+    export NGINX_SITE_TEMPLATE="/ddev_config/nginx-site.conf"
 fi
 
 # Update the default PHP and FPM versions a DDEV_PHP_VERSION like '5.6' or '7.0' is provided
@@ -20,6 +20,13 @@ if [ -n "$DDEV_PHP_VERSION" ] ; then
 	update-alternatives --set php /usr/bin/php${DDEV_PHP_VERSION}
 	ln -sf /usr/sbin/php-fpm${DDEV_PHP_VERSION} /usr/sbin/php-fpm
 	export PHP_INI=/etc/php/${DDEV_PHP_VERSION}/fpm/php.ini
+fi
+
+# If the user has provided custom PHP configuration, copy it into a directory
+# where PHP will automatically include it.
+if [ -d /ddev_config/php ] ; then
+    cp /ddev_config/php/* /etc/php/${DDEV_PHP_VERSION}/cli/conf.d/
+    cp /ddev_config/php/* /etc/php/${DDEV_PHP_VERSION}/fpm/conf.d/
 fi
 
 if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
