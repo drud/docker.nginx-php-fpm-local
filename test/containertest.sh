@@ -30,6 +30,9 @@ for v in 5.6 7.0 7.1 7.2; do
 	docker exec -it $CONTAINER drush --version
 	docker exec -it $CONTAINER wp --version
 
+	# Make sure composer create-project is working.
+	docker exec -it $CONTAINER composer create-project drupal-composer/drupal-project:8.x-dev my-drupal8-site --stability dev --no-interaction
+
 	echo "testing error states for php$v"
 	# These are just the standard nginx 403 and 404 pages
 	curl localhost:$HOST_PORT/ | grep "403 Forbidden"
