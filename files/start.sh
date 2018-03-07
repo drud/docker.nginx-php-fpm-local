@@ -10,8 +10,13 @@ if [ -n "$DOCROOT" ] ; then
     export NGINX_DOCROOT="/var/www/html/$DOCROOT"
 fi
 
-if [ -f /var/www/html/.ddev/nginx-site.conf ] ; then
-    export NGINX_SITE_TEMPLATE=/var/www/html/.ddev/nginx-site.conf
+if [ -f "/ddev_config/nginx-site.conf" ] ; then
+    export NGINX_SITE_TEMPLATE="/ddev_config/nginx-site.conf"
+fi
+
+# Bring in a user override of php.ini from .ddev
+if [ -f /ddev_config/php.ini ] ; then
+    cp /ddev_config/php.ini /etc/php/$DDEV_PHP_VERSION/fpm/php.ini
 fi
 
 # Update the default PHP and FPM versions a DDEV_PHP_VERSION like '5.6' or '7.0' is provided
