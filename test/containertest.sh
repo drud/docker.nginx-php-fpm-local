@@ -89,8 +89,8 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop wordpress default; do
 done
 
 echo "testing use of custom nginx and php configs"
-docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSION=7.2" -v $PWD/test/testdata:/ddev_config -d --name $CONTAINER_NAME -d $DOCKER_IMAGE
+docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSION=7.2" -v $PWD/test/testdata:/mnt/ddev_config -d --name $CONTAINER_NAME -d $DOCKER_IMAGE
 docker exec -it $CONTAINER_NAME grep "docroot is /var/www/html/potato in custom conf" /etc/nginx/sites-enabled/nginx-site.conf
 # Make sure that PHP has picked up our config change.
 docker exec -it $CONTAINER_NAME php --re xdebug | grep "xdebug does not exist"
-
+docker exec -it $CONTAINER_NAME php -i | grep "max_input_time.*999"
