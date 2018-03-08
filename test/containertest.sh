@@ -74,6 +74,8 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop wordpress default; do
 	# Make sure that the right PHP version was selected for the project_type
 	# Only drupal6 is currently different here.
 	docker exec -it $CONTAINER php --version | grep "PHP $PHP_VERSION"
+	# xdebug should be disabled by default.
+    docker exec -it $CONTAINER_NAME php --re xdebug | grep "xdebug does not exist"
 
 	# Make sure we don't have lots of "closed keepalive connection" complaints
 	docker logs $CONTAINER | grep -v "closed keepalive connection"
@@ -94,7 +96,12 @@ done
 echo "testing use of custom nginx and php configs"
 docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSION=7.2" -v $PWD/test/testdata:/mnt/ddev_config -d --name $CONTAINER_NAME -d $DOCKER_IMAGE
 docker exec -it $CONTAINER_NAME grep "docroot is /var/www/html/potato in custom conf" /etc/nginx/sites-enabled/nginx-site.conf
-# Make sure that PHP has picked up our config change.
+
+# Enable xdebug (and then disable again) and make sure it does the right thing.
+docker exec -it $CONTAINER_NAME enable_xdebug
+docker exec -it $CONTAINER_NAME php --re xdebug | grep "xdebug.remote_enable"
+docker exec -it $CONTAINER_NAME disable_xdebug
 docker exec -it $CONTAINER_NAME php --re xdebug | grep "xdebug does not exist"
+
 # With overridden value we should have assert.active=0, not the default
 docker exec -it $CONTAINER_NAME php -i | grep "assert.active.*=> 0 => 0"
