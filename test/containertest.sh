@@ -38,6 +38,9 @@ for v in 5.6 7.0 7.1 7.2; do
 	# Make sure composer create-project is working.
 	docker exec -it $CONTAINER composer create-project drupal-composer/drupal-project:8.x-dev my-drupal8-site --stability dev --no-interaction
 
+    # Default settings for assert.active should be 1
+    docker exec -it $CONTAINER_NAME php -i | grep "assert.active.*=> 1 => 1"
+
 	echo "testing error states for php$v"
 	# These are just the standard nginx 403 and 404 pages
 	curl localhost:$HOST_PORT/ | grep "403 Forbidden"
@@ -93,4 +96,5 @@ docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSIO
 docker exec -it $CONTAINER_NAME grep "docroot is /var/www/html/potato in custom conf" /etc/nginx/sites-enabled/nginx-site.conf
 # Make sure that PHP has picked up our config change.
 docker exec -it $CONTAINER_NAME php --re xdebug | grep "xdebug does not exist"
-docker exec -it $CONTAINER_NAME php -i | grep "max_input_time.*999"
+# With overridden value we should have assert.active=0, not the default
+docker exec -it $CONTAINER_NAME php -i | grep "assert.active.*=> 0 => 0"
