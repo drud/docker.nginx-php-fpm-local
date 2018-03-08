@@ -1,4 +1,5 @@
 #!/bin/bash
 
 phpenmod xdebug
-killall -HUP php-fpm
+killall -HUP php-fpm || true
+echo "Enabled xdebug"
