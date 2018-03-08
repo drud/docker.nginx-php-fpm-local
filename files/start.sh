@@ -61,6 +61,9 @@ else
  echo php_flag[display_errors] = on >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
 fi
 
+# Disable xdebug by default. Users can enable with /usr/local/bin/enable_xdebug
+disable_xdebug
+
 /usr/bin/supervisord -c /etc/supervisord.conf
 
 echo 'Server started'
