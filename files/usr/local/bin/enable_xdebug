@@ -1,0 +1,4 @@
+#!/bin/bash
+
+phpenmod xdebug
+killall -HUP php-fpm
