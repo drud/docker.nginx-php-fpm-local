@@ -46,20 +46,20 @@ fi
 envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-enabled/nginx-site.conf
 
 # Change nginx to UID/GID of the docker user
-if [ -n "$DDEV_UID" ] ; then
-    usermod -u $DDEV_UID nginx
-fi
-if [ -n "$DDEV_GID" ] ; then
-    groupmod -g $DDEV_GID nginx
-fi
-chown -R nginx:nginx /var/log/nginx
+#if [ -n "$DDEV_UID" ] ; then
+#    usermod -u $DDEV_UID nginx
+#fi
+#if [ -n "$DDEV_GID" ] ; then
+#    groupmod -g $DDEV_GID nginx
+#fi
+#chown -R nginx:nginx /var/log/nginx
 
 # Display PHP errors or not
-if [[ "$ERRORS" != "1" ]] ; then
- echo php_flag[display_errors] = off >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
-else
- echo php_flag[display_errors] = on >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
-fi
+#if [[ "$ERRORS" != "1" ]] ; then
+# echo php_flag[display_errors] = off >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
+#else
+# echo php_flag[display_errors] = on >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
+#fi
 
 # Disable xdebug by default. Users can enable with /usr/local/bin/enable_xdebug
 disable_xdebug

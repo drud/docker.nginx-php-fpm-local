@@ -90,6 +90,12 @@ RUN mkdir -p /etc/nginx/sites-enabled && \
     update-alternatives --set php /usr/bin/php${PHP_DEFAULT_VERSION} && \
     ln -s /usr/sbin/php-fpm${PHP_DEFAULT_VERSION} /usr/sbin/php-fpm
 
+RUN chmod -R 777 /var/log
+
+# Experimental, better to have dedicated directories instead
+RUN chmod -R ugo+w /usr/sbin /usr/bin /etc/nginx /var/cache/nginx /run /var/www/html /etc/php/*/*/conf.d/
+RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
+
 VOLUME /var/log/nginx
 EXPOSE 443 80 8025
 HEALTHCHECK --interval=5s --retries=5 CMD curl --fail http://localhost/healthcheck/ || exit 1
