@@ -2,7 +2,7 @@
 ##
 # WP-cli wrapper: Append path automatically so that user doesn't have to
 ##
-if [ "$(whoami)" = "root" ]; then
+if [ "$(id -u)" = "0" ]; then
 
   # Gather all arguments because string interpolation doesn't work for $@
   args=""

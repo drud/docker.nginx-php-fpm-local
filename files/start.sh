@@ -29,8 +29,13 @@ if [ -d /mnt/ddev_config/php ] ; then
     cp /mnt/ddev_config/php/* /etc/php/${DDEV_PHP_VERSION}/fpm/conf.d/
 fi
 
+# Provision the user with gitconfig and my.cnf
+cp /var/tmp/userhome/.gitconfig /var/tmp/userhome/.my.cnf ~
+
+#ln -s /var/tmp/userhome/.composer ~
+
 if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
-	mkdir -p ~/.drush/commands && ln -s ~/backdrop_drush_commands ~/.drush/commands/backdrop
+	mkdir -p ~/.drush/commands && ln -s /var/tmp/backdrop_drush_commands ~/.drush/commands/backdrop
 fi
 
 
