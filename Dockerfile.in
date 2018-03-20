@@ -98,8 +98,8 @@ RUN chmod -R 777 /var/log
 # Make the likely home/.drush directory writeable for (most common) case where a real homedir doesn't exist.
 RUN cp -r /var/tmp/userhome/.drush / && chmod -R ugo+w /.drush
 # Provide starter gitconfig and my.cnf
-RUN ln -s /var/tmp/userhome/.gitconfig / && ln -s /var/tmp/userhome/.my.cnf /
-RUN chmod ugo+w -R /var/tmp/userhome
+# RUN ln -s /var/tmp/userhome/.gitconfig / && ln -s /var/tmp/userhome/.my.cnf /
+# RUN chmod ugo+w -R /var/tmp/userhome
 RUN mkdir -p /.composer && chmod -R ugo+rwx /.composer
 
 
