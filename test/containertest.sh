@@ -27,7 +27,7 @@ mkdir -p $composercache
 for v in 5.6 7.0 7.1 7.2; do
 	echo "starting container for tests on php$v"
 
-	CONTAINER=$(docker run -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -v "$composercache:/.composer/cache" -d $DOCKER_IMAGE)
+	CONTAINER=$(docker run -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -v "$composercache:/home/.composer/cache" -d $DOCKER_IMAGE)
 	./test/containercheck.sh
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
@@ -36,7 +36,7 @@ for v in 5.6 7.0 7.1 7.2; do
 	docker exec -it $CONTAINER wp --version
 
 	# Make sure composer create-project is working.
-	docker exec -it $CONTAINER composer create-project -d /tmp drupal-composer/drupal-project:8.x-dev my-drupal8-site --stability dev --no-interaction --no-dev
+	docker exec -it $CONTAINER composer create-project -d /tmp drupal-composer/drupal-project:8.x-dev my-drupal8-site --stability dev --no-interaction
 
     # Default settings for assert.active should be 1
     docker exec -it $CONTAINER_NAME php -i | grep "assert.active.*=> 1 => 1"

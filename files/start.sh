@@ -29,11 +29,6 @@ if [ -d /mnt/ddev_config/php ] ; then
     cp /mnt/ddev_config/php/* /etc/php/${DDEV_PHP_VERSION}/fpm/conf.d/
 fi
 
-# Provision the user with gitconfig and my.cnf
-# cp /var/tmp/userhome/.gitconfig /var/tmp/userhome/.my.cnf ~
-
-#ln -s /var/tmp/userhome/.composer ~
-
 if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
 	mkdir -p ~/.drush/commands && ln -s /var/tmp/backdrop_drush_commands ~/.drush/commands/backdrop
 fi
@@ -49,22 +44,6 @@ fi
 
 # Substitute values of environment variables in nginx configuration
 envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-enabled/nginx-site.conf
-
-# Change nginx to UID/GID of the docker user
-#if [ -n "$DDEV_UID" ] ; then
-#    usermod -u $DDEV_UID nginx
-#fi
-#if [ -n "$DDEV_GID" ] ; then
-#    groupmod -g $DDEV_GID nginx
-#fi
-#chown -R nginx:nginx /var/log/nginx
-
-# Display PHP errors or not
-#if [[ "$ERRORS" != "1" ]] ; then
-# echo php_flag[display_errors] = off >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
-#else
-# echo php_flag[display_errors] = on >> /etc/php/$DDEV_PHP_VERSION/fpm/php-fpm.conf
-#fi
 
 # Disable xdebug by default. Users can enable with /usr/local/bin/enable_xdebug
 disable_xdebug

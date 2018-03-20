@@ -13,11 +13,8 @@ ENV BACKDROP_DRUSH_VERSION=0.0.6
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV MH_SMTP_BIND_ADDR 127.0.0.1:1025
-# ENV PATH="/var/tmp/userhome/.composer/vendor/bin:$PATH"
 ENV NGINX_SITE_TEMPLATE /etc/nginx/nginx-site.conf
 ENV NGINX_DOCROOT /var/www/html
-ENV GIT_COMMITTER_NAME "DDEV-Local user"
-ENV GIT_COMMITER_EMAIL "nobody@example.com"
 
 # composer normally screams about running as root, we don't need that.
 ENV COMPOSER_ALLOW_SUPERUSER 1
@@ -33,7 +30,8 @@ RUN apt-get -qq update && \
         apt-transport-https \
         wget \
         fontconfig \
-        bzip2 && \
+        bzip2 \
+        openssh-client && \
     wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && \
     echo "deb https://packages.sury.org/php/ jessie main" > /etc/apt/sources.list.d/php.list && \
     wget -q -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key && \
@@ -66,17 +64,17 @@ RUN apt-get -qq update && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/*
 
+ADD files /
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -sSL "https://github.com/mailhog/MailHog/releases/download/v${MAILHOG_VERSION}/MailHog_linux_amd64" -o /usr/local/bin/mailhog
 RUN curl -sSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp-cli
-# drush installed into /root/.composer because we're running as here, but it should work for all users because
-# of the symlink.
-RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /root/.composer/vendor/drush/drush/drush /usr/local/bin/drush && chmod -R ugo+rx /root
+
+RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /home/.composer/vendor/drush/drush/drush /usr/local/bin/drush && chmod -R ugo+rx /root
 
 
 RUN curl -sSL "https://drupalconsole.com/installer" -L -o /usr/local/bin/drupal && chmod +x /usr/local/bin/drupal
 
-ADD files /
 
 RUN curl -sSL https://github.com/backdrop-contrib/drush/releases/download/${BACKDROP_DRUSH_VERSION}/drush.zip -o /tmp/backdrop_drush.zip && unzip /tmp/backdrop_drush.zip -d /var/tmp/backdrop_drush_commands
 
@@ -94,18 +92,11 @@ RUN mkdir -p /etc/nginx/sites-enabled && \
 
 RUN chmod -R 777 /var/log
 
-
-# Make the likely home/.drush directory writeable for (most common) case where a real homedir doesn't exist.
-RUN cp -r /var/tmp/userhome/.drush / && chmod -R ugo+w /.drush
-# Provide starter gitconfig and my.cnf
-# RUN ln -s /var/tmp/userhome/.gitconfig / && ln -s /var/tmp/userhome/.my.cnf /
-# RUN chmod ugo+w -R /var/tmp/userhome
-RUN mkdir -p /.composer && chmod -R ugo+rwx /.composer
-
-
 # Experimental, better to have dedicated directories instead
 RUN chmod -R ugo+w /usr/sbin /usr/bin /etc/nginx /var/cache/nginx /run /var/www/html /etc/php/*/*/conf.d/ /var/lib/php/modules /etc/alternatives
-# RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
+# All users will have their home directory in /home, make it fully writeable
+RUN chmod 777 /home
+RUN chmod -R ugo+w /home/.composer /home/.drush
 
 VOLUME /var/log/nginx
 EXPOSE 8080 8025
