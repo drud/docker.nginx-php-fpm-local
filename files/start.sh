@@ -30,7 +30,7 @@ if [ -d /mnt/ddev_config/php ] ; then
 fi
 
 # Provision the user with gitconfig and my.cnf
-cp /var/tmp/userhome/.gitconfig /var/tmp/userhome/.my.cnf ~
+# cp /var/tmp/userhome/.gitconfig /var/tmp/userhome/.my.cnf ~
 
 #ln -s /var/tmp/userhome/.composer ~
 
