@@ -30,7 +30,7 @@ if [ -d /mnt/ddev_config/php ] ; then
 fi
 
 if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
-	mkdir -p ~/.drush/commands && ln -s /var/tmp/backdrop_drush_commands ~/.drush/commands/backdrop
+	mkdir -p /home/.drush/commands && ln -s /var/tmp/backdrop_drush_commands /home/.drush/commands/backdrop
 fi
 
 
