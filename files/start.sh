@@ -25,8 +25,11 @@ fi
 # If the user has provided custom PHP configuration, copy it into a directory
 # where PHP will automatically include it.
 if [ -d /mnt/ddev_config/php ] ; then
-    cp /mnt/ddev_config/php/* /etc/php/${DDEV_PHP_VERSION}/cli/conf.d/
-    cp /mnt/ddev_config/php/* /etc/php/${DDEV_PHP_VERSION}/fpm/conf.d/
+    # If there are files in the mount
+    if [ -n "$(ls -A /mnt/ddev_config/php 2>/dev/null)" ]; then
+        cp /mnt/ddev_config/php/*.ini /etc/php/${DDEV_PHP_VERSION}/cli/conf.d/
+        cp /mnt/ddev_config/php/*.ini /etc/php/${DDEV_PHP_VERSION}/fpm/conf.d/
+    fi
 fi
 
 if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
