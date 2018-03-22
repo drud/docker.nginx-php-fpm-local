@@ -8,9 +8,26 @@ set -o nounset
 
 HOST_PORT="1081"
 CONTAINER_PORT="8080"
-# Exported so that containercheck.sh will get $CONTAINER_NAME
-export CONTAINER_NAME=web-local-test
+CONTAINER_NAME=web-local-test
 DOCKER_IMAGE=$(awk '{print $1}' .docker_image)
+
+# Wait for container to be ready.
+function containercheck {
+    set +x
+	for i in {10..0};
+	do
+		# status contains uptime and health in parenthesis, sed to return health
+		status="$(docker ps --format "{{.Status}}" --filter "name=$CONTAINER_NAME" | sed  's/.*(\(.*\)).*/\1/')"
+		if [[ "$status" == "healthy" ]]
+		then
+			set -x
+			return 0
+		fi
+		sleep 1
+	done
+	set -x
+	return 1
+}
 
 function cleanup {
 	echo "Removing $CONTAINER_NAME"
@@ -28,7 +45,11 @@ for v in 5.6 7.0 7.1 7.2; do
 	echo "starting container for tests on php$v"
 
 	CONTAINER=$(docker run -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -v "$composercache:/home/.composer/cache" -d $DOCKER_IMAGE)
-	./test/containercheck.sh
+	if ! containercheck; then
+        echo "Container did not become ready"
+        exit 1
+    fi
+
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
 	docker exec -it $CONTAINER php --version | grep "PHP $v"
@@ -67,7 +88,10 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop wordpress default; do
 	  PHP_VERSION="5.6"
 	fi
 	CONTAINER=$(docker run  -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$PHP_VERSION" -e "DDEV_PROJECT_TYPE=$project_type" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
-	./test/containercheck.sh
+	if ! containercheck; then
+        echo "Container did not become ready"
+        exit 1
+    fi
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	# Make sure that the project-specific config has been linked in.
 	docker exec -it $CONTAINER grep "# ddev $project_type config" /etc/nginx/nginx-site.conf

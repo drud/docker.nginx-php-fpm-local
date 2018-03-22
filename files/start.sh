@@ -48,7 +48,7 @@ envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-enabled/
 # Disable xdebug by default. Users can enable with /usr/local/bin/enable_xdebug
 disable_xdebug
 
-echo 'Server started'
 tail -f /var/log/nginx/error.log /var/log/php-fpm.log &
+echo 'Server started'
 
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf
