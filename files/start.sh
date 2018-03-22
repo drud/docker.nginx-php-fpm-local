@@ -30,7 +30,9 @@ if [ -d /mnt/ddev_config/php ] ; then
 fi
 
 if [ "$DDEV_PROJECT_TYPE" = "backdrop" ] ; then
-	mkdir -p /home/.drush/commands && ln -s /var/tmp/backdrop_drush_commands /home/.drush/commands/backdrop
+    # Start can be executed when the container is already running.
+    rm -f /home/.drush/commands/backdrop
+    mkdir -p /home/.drush/commands && ln -s /var/tmp/backdrop_drush_commands /home/.drush/commands/backdrop
 fi
 
 
