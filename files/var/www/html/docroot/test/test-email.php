@@ -9,5 +9,6 @@ $headers = "From: " . $from;
 $result = mail($to, $subject, $message, $headers);
 if ($result == TRUE) {
     echo "Test email sent";
+} else {
+    echo "Failed to send test email";
 }
-?>

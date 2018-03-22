@@ -7,7 +7,7 @@ set -o pipefail
 set -o nounset
 
 HOST_PORT="1081"
-CONTAINER_PORT="80"
+CONTAINER_PORT="8080"
 # Exported so that containercheck.sh will get $CONTAINER_NAME
 export CONTAINER_NAME=web-local-test
 DOCKER_IMAGE=$(awk '{print $1}' .docker_image)
@@ -27,7 +27,7 @@ mkdir -p $composercache
 for v in 5.6 7.0 7.1 7.2; do
 	echo "starting container for tests on php$v"
 
-	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -v "$composercache:/root/.composer/cache" -d $DOCKER_IMAGE)
+	CONTAINER=$(docker run -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$v" -d --name $CONTAINER_NAME -v "$composercache:/home/.composer/cache" -d $DOCKER_IMAGE)
 	./test/containercheck.sh
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
@@ -36,7 +36,7 @@ for v in 5.6 7.0 7.1 7.2; do
 	docker exec -it $CONTAINER wp --version
 
 	# Make sure composer create-project is working.
-	docker exec -it $CONTAINER composer create-project drupal-composer/drupal-project:8.x-dev my-drupal8-site --stability dev --no-interaction
+	docker exec -it $CONTAINER composer create-project -d /tmp drupal-composer/drupal-project:8.x-dev my-drupal8-site --stability dev --no-interaction
 
     # Default settings for assert.active should be 1
     docker exec -it $CONTAINER_NAME php -i | grep "assert.active.*=> 1 => 1"
@@ -66,7 +66,7 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop wordpress default; do
 	if [ "$project_type" == "drupal6" ]; then
 	  PHP_VERSION="5.6"
 	fi
-	CONTAINER=$(docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$PHP_VERSION" -e "DDEV_PROJECT_TYPE=$project_type" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
+	CONTAINER=$(docker run  -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=docroot" -e "DDEV_PHP_VERSION=$PHP_VERSION" -e "DDEV_PROJECT_TYPE=$project_type" -d --name $CONTAINER_NAME -d $DOCKER_IMAGE)
 	./test/containercheck.sh
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	# Make sure that the project-specific config has been linked in.
@@ -86,15 +86,15 @@ for project_type in drupal6 drupal7 drupal8 typo3 backdrop wordpress default; do
 	# Make sure that backdrop drush commands were added on backdrop and only backdrop
 	if [ "$project_type" == "backdrop" ] ; then
 	 	# The .drush/commands/backdrop directory should only exist for backdrop apptype
-		docker exec -it $CONTAINER bash -c 'if [ ! -d  /root/.drush/commands/backdrop ] ; then exit 1; fi'
+		docker exec -it $CONTAINER bash -c 'if [ ! -d  ~/.drush/commands/backdrop ] ; then exit 1; fi'
 	else
-		docker exec -it $CONTAINER bash -c 'if [ -d  /root/.drush/commands/backdrop ] ; then exit 2; fi'
+		docker exec -it $CONTAINER bash -c 'if [ -d  ~/.drush/commands/backdrop ] ; then exit 2; fi'
 	fi
 	docker rm -f $CONTAINER
 done
 
 echo "testing use of custom nginx and php configs"
-docker run -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSION=7.2" -v $PWD/test/testdata:/mnt/ddev_config -d --name $CONTAINER_NAME -d $DOCKER_IMAGE
+docker run  -u "$(id -u):$(id -g)" -p $HOST_PORT:$CONTAINER_PORT -e "DOCROOT=potato" -e "DDEV_PHP_VERSION=7.2" -v $PWD/test/testdata:/mnt/ddev_config -d --name $CONTAINER_NAME -d $DOCKER_IMAGE
 docker exec -it $CONTAINER_NAME grep "docroot is /var/www/html/potato in custom conf" /etc/nginx/sites-enabled/nginx-site.conf
 
 # Enable xdebug (and then disable again) and make sure it does the right thing.
