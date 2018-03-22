@@ -26,7 +26,7 @@ fi
 # where PHP will automatically include it.
 if [ -d /mnt/ddev_config/php ] ; then
     # If there are files in the mount
-    if [ -n "$(ls -A /mnt/ddev_config/php 2>/dev/null)" ]; then
+    if [ -n "$(ls -A /mnt/ddev_config/php/*.ini 2>/dev/null)" ]; then
         cp /mnt/ddev_config/php/*.ini /etc/php/${DDEV_PHP_VERSION}/cli/conf.d/
         cp /mnt/ddev_config/php/*.ini /etc/php/${DDEV_PHP_VERSION}/fpm/conf.d/
     fi

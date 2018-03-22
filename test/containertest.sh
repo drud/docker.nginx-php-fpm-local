@@ -77,6 +77,9 @@ for v in 5.6 7.0 7.1 7.2; do
 	curl --fail localhost:$HOST_PORT/test/phptest.php
 	curl -s localhost:$HOST_PORT/test/test-email.php | grep "Test email sent"
 
+    # Make sure the fpmstatus url is working for testing php-fpm.
+    curl -s localhost:$HOST_PORT/fpmstatus | grep "idle processes"
+
 	docker rm -f $CONTAINER
 done
 

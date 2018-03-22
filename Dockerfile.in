@@ -101,5 +101,6 @@ RUN touch /var/log/nginx/error.log /var/log/php-fpm.log && chmod ugo+rw /var/log
 
 VOLUME /var/log/nginx
 EXPOSE 8080 8025
-HEALTHCHECK --interval=5s --retries=5 CMD curl --fail http://localhost:8080/healthcheck/ && pgrep php-fpm || exit 1
+HEALTHCHECK --interval=2s --retries=5 CMD ["/healthcheck.sh"]
+
 CMD ["/start.sh"]
