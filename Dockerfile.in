@@ -92,14 +92,12 @@ RUN mkdir -p /etc/nginx/sites-enabled && \
 
 RUN chmod -R 777 /var/log
 
-# Experimental, better to have dedicated directories instead
 RUN chmod -R ugo+w /usr/sbin /usr/bin /etc/nginx /var/cache/nginx /run /var/www/html /etc/php/*/*/conf.d/ /var/lib/php/modules /etc/alternatives
 # All users will have their home directory in /home, make it fully writeable
 RUN mkdir -p /home/.composer /home/.drush/commands && chmod 777 /home && chmod -R ugo+w /home/.composer /home/.drush
 
-RUN touch /var/log/nginx/error.log /var/log/php-fpm.log && chmod ugo+rw /var/log/nginx/error.log /var/log/php-fpm.log
+RUN touch /var/log/nginx/error.log /var/log/nginx/access.log /var/log/php-fpm.log && chmod ugo+rw /var/log/nginx/error.log /var/log/nginx/access.log /var/log/php-fpm.log
 
-VOLUME /var/log/nginx
 EXPOSE 8080 8025
 HEALTHCHECK --interval=2s --retries=5 CMD ["/healthcheck.sh"]
 
