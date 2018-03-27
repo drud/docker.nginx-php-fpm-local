@@ -100,6 +100,6 @@ RUN touch /var/log/nginx/error.log /var/log/nginx/access.log /var/log/php-fpm.lo
   chmod 666 /var/log/nginx/error.log /var/log/nginx/access.log /var/log/php-fpm.log
 
 EXPOSE 8080 8025
-HEALTHCHECK --interval=5m --timeout=3s --retries=3 CMD ["/healthcheck.sh"]
+HEALTHCHECK --interval=2s --retries=5 CMD ["/healthcheck.sh"]
 
 CMD ["/start.sh"]
