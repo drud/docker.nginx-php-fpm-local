@@ -64,6 +64,9 @@ RUN apt-get -qq update && \
     apt-get -qq clean -y && \
 	rm -rf /var/lib/apt/lists/*
 
+# Arbitrary user needs to be able to bind to privileged ports (for nginx)
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
+
 ADD files /
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -99,7 +102,7 @@ RUN mkdir -p /home/.composer /home/.drush/commands && chmod 777 /home && chmod -
 RUN touch /var/log/nginx/error.log /var/log/nginx/access.log /var/log/php-fpm.log && \
   chmod 666 /var/log/nginx/error.log /var/log/nginx/access.log /var/log/php-fpm.log
 
-EXPOSE 8080 8025
+EXPOSE 80 8025
 HEALTHCHECK --interval=2s --retries=5 CMD ["/healthcheck.sh"]
 
 CMD ["/start.sh"]

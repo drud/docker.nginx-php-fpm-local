@@ -7,7 +7,7 @@ set -o pipefail
 set -o nounset
 
 HOST_PORT="1081"
-CONTAINER_PORT="8080"
+CONTAINER_PORT="80"
 CONTAINER_NAME=web-local-test
 DOCKER_IMAGE=$(awk '{print $1}' .docker_image)
 
