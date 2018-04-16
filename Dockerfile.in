@@ -37,12 +37,14 @@ RUN apt-get -qq update && \
     wget -q -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key && \
     apt-key add /tmp/nginx_signing.key && \
     echo "deb http://nginx.org/packages/debian/ jessie nginx" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 	apt-get -qq update && \
 	apt-get -qq install --no-install-recommends --no-install-suggests -y \
         less \
         git \
         mysql-client \
         nginx \
+        nodejs \
         libcap2-bin \
         supervisor \
         sudo \
