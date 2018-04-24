@@ -48,6 +48,7 @@ RUN apt-get -qq update && \
         sudo \
         imagemagick \
         iputils-ping \
+        patch \
         telnet \
         netcat6 \
         iproute2 \
