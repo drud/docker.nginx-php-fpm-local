@@ -36,13 +36,17 @@ RUN apt-get -qq update && \
     echo "deb https://packages.sury.org/php/ jessie main" > /etc/apt/sources.list.d/php.list && \
     wget -q -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key && \
     apt-key add /tmp/nginx_signing.key && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     echo "deb http://nginx.org/packages/debian/ jessie nginx" >> /etc/apt/sources.list && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 	apt-get -qq update && \
 	apt-get -qq install --no-install-recommends --no-install-suggests -y \
         less \
         git \
         mysql-client \
         nginx \
+        nodejs \
         libcap2-bin \
         supervisor \
         sudo \
@@ -56,6 +60,7 @@ RUN apt-get -qq update && \
 		nano \
 		gettext \
 		ncurses-bin \
+		yarn \
 		zip \
 		unzip \
 		libpcre3 && \
@@ -76,7 +81,6 @@ RUN curl -sSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERS
 
 RUN composer global require drush/drush:${DRUSH_VERSION} && ln -s /home/.composer/vendor/drush/drush/drush /usr/local/bin/drush && chmod -R ugo+rx /root
 
-
 RUN curl -sSL "https://drupalconsole.com/installer" -L -o /usr/local/bin/drupal && chmod +x /usr/local/bin/drupal
 
 
@@ -96,7 +100,7 @@ RUN mkdir -p /etc/nginx/sites-enabled && \
 
 RUN chmod -R 777 /var/log
 
-RUN chmod -R ugo+w /usr/sbin /usr/bin /etc/nginx /var/cache/nginx /run /var/www/html /etc/php/*/*/conf.d/ /var/lib/php/modules /etc/alternatives
+RUN chmod -R ugo+w /usr/sbin /usr/bin /etc/nginx /var/cache/nginx /run /var/www/html /etc/php/*/*/conf.d/ /var/lib/php/modules /etc/alternatives /usr/lib/node_modules
 # All users will have their home directory in /home, make it fully writeable
 RUN mkdir -p /home/.composer /home/.drush/commands && chmod 777 /home && chmod -R ugo+w /home/.composer /home/.drush
 
