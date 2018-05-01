@@ -51,7 +51,9 @@ fi
 envsubst "$NGINX_SITE_VARS" < "$NGINX_SITE_TEMPLATE" > /etc/nginx/sites-enabled/nginx-site.conf
 
 # Disable xdebug by default. Users can enable with /usr/local/bin/enable_xdebug
-disable_xdebug
+if [ "$DDEV_XDEBUG_ENABLED" != "true" ]; then
+    disable_xdebug
+fi
 
 echo 'Server started'
 
